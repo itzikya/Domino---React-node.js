@@ -1,5 +1,6 @@
 import React, {Component} from "React";
 import LoginModal from "./Login-Modal";
+import LobbyContainer from "../Lobby/Lobby-Container"
 
 import "./Login.css";
 
@@ -17,8 +18,7 @@ class Login extends Component {
         this.handleLoginError = this.handleLoginError.bind(this);
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.logoutHandler = this.logoutHandler.bind(this);
-        //changed
-        this.getUserName();
+        this.getUserName = this.getUserName.bind(this);
     }
 
     render() {        
@@ -53,7 +53,8 @@ class Login extends Component {
         .then(userInfo => {
             this.setState(()=>({currentUser:userInfo, showLogin: false}));
         })
-        .catch(err=>{            
+        .catch(err => {            
+            //error 401 = UNAUTHORIZED
             if (err.status === 401) {
                 this.setState(()=>({showLogin: true}));
             } else {
@@ -64,7 +65,7 @@ class Login extends Component {
 
     fetchUserInfo() {        
         return fetch('/users',{method: 'GET', credentials: 'include'})
-        .then((res) => {            
+        .then(res => {            
             if (!res.ok){
                 throw res;
             }
@@ -74,9 +75,9 @@ class Login extends Component {
 
     logoutHandler() {
         fetch('/users/logout', {method: 'GET', credentials: 'include'})
-        .then(response => {
-            if (!response.ok) {
-                console.log(`failed to logout user ${this.state.currentUser.name} `, response);                
+        .then(res => {
+            if (!res.ok) {
+                console.log(`failed to logout user ${this.state.currentUser.name} `, res);                
             }
             this.setState(()=>({currentUser: {name:''}, showLogin: true}));
         })

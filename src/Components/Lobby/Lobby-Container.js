@@ -1,10 +1,8 @@
 import React, {Component} from "react";
-//import GamesArea from "./gamesArea";
-//import UserList from "./usersList.jsx";
-//import GameEntryForm from "./gameEntryForm";
-//import GameContainer from "../gameTable/gameContainer";
-//import {snackbarInvalid} from "../../engine/snackBars/snackBar";
-//import TakiLogo from '../../../Style/StyleImgs/icon.png'
+import GamesArea from "./Games-Area";
+import UserList from "./Users-List";
+import GameEntryForm from "./Game-Entry-Form";
+import DominoLogo from '../../domino.png'
 import "./Lobby-Container.css";
 
 class LobbyContainer extends Component{
@@ -14,39 +12,40 @@ class LobbyContainer extends Component{
             showNewGameForm: true,
             watchGame: false,
             joinedGame: false,
-            username: props.name,
-            currentGamename: ""
+            userName: props.name,
+            currentGameName: ""
         };
     }
 
     render(){
-        if(this.state.joinedGame === false && this.state.watchGame === false){
+        if(this.state.joinedGame === false && this.state.watchGame === false) {
             return(
                 <div className="lobby-container">
-                    <img className={"logo"} src={TakiLogo}></img>
-                    <button className={"util btn"} id={"logoutBtn"} onClick={this.props.logoutHandler}></button>
+                    <img className="logo" src={DominoLogo}></img>
+                    <button className="util btn" id="logoutBtn" onClick={this.props.logoutHandler}></button>
                     <UserList />
-                    {this.state.showNewGameForm === true ? <GameEntryForm newGameEntryHandler={this.newGameEntryHandler.bind(this)}/>:null}
-                    <GamesArea username = {this.state.username}
-                               joinGameHandler = {this.joinGameHandler.bind(this)}
-                               removeGameHandler = {this.removeGameHandler.bind(this)}
-                               watchGameHandler = {this.watchGameHandler.bind(this)}
+                    {this.state.showNewGameForm ? 
+                    <GameEntryForm newGameEntryHandler={this.newGameEntryHandler.bind(this)}/> : null}
+                    <GamesArea userName={this.state.userName}
+                               joinGameHandler={this.joinGameHandler.bind(this)}
+                               removeGameHandler={this.removeGameHandler.bind(this)}
+                               watchGameHandler={this.watchGameHandler.bind(this)}
                     />
                 </div>
             )
-        } else if(this.state.joinedGame === true){
+        } else if(this.state.joinedGame === true) {
             return(
-                    <GameContainer username = {this.state.username}
-                                   gamename = {this.state.currentGamename}
-                                   playerStatus = {"waiting"}
-                                   leaveGameHandler = {this.leaveGameHandler.bind(this)} />
+                    <GameContainer userName={this.state.userName}
+                                   gameName={this.state.currentGameName}
+                                   playerStatus={"waiting"}
+                                   leaveGameHandler={this.leaveGameHandler.bind(this)} />
             )
         } else if(this.state.watchGame === true) {
             return(
-                    <GameContainer username = {this.state.username}
-                                   gamename = {this.state.currentGamename}
-                                   playerStatus = {"spectator"}
-                                   leaveGameHandler = {this.leaveGameHandler.bind(this)} />
+                    <GameContainer username={this.state.username}
+                                   gameName={this.state.currentGameName}
+                                   playerStatus={"spectator"}
+                                   leaveGameHandler={this.leaveGameHandler.bind(this)} />
             )
         }
     }
@@ -54,38 +53,39 @@ class LobbyContainer extends Component{
     newGameEntryHandler(e) {
         e.preventDefault();
 
-        const gamename = e.target.elements.name.value;
-        const _playersNum = e.target.elements.playersNum.value;
-        const _isCompPlay = document.getElementById("isCompPlay").checked;
+        const gameName = e.target.elements.name.value;
+        const playersNum = e.target.elements.playersNum.value;
+        const isCompPlay = document.getElementById("isCompPlay").checked;
 
         fetch("/games/addGame", {
             method: "POST",
-            body: JSON.stringify({gamename: gamename,playersNum: _playersNum, isCompPlay: _isCompPlay }),
-            credentials: "include"
+            body: JSON.stringify({gameName: gameName, 
+                                  playersNum: playersNum, 
+                                  isCompPlay: isCompPlay}),
+            credentials: "include"})
+        .then(response => {
+            if (!response.ok) {
+                throw response;
+            }
+            this.setState(()=>({showNewGameForm:false}));
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw response;
-                }
-                this.setState(()=>({showNewGameForm:false}));
-            })
-            .catch(() => {
-                snackbarInvalid("Game name already exist amigo");
-            });
+        .catch(() => {
+            //snackbarInvalid("Game name already exist");
+        });
         return false;
     }
 
     joinGameHandler(game) {
         fetch("/games/joinGame", {
             method: "POST",
-            body: JSON.stringify({gamename: game}),
+            body: JSON.stringify({gameName: game}),
             credentials: "include"
         })
             .then(response => {
                 if (!response.ok) {
                     throw response;
                 } else {
-                    this.setState(() => ({joinedGame: true , currentGamename: game}));
+                    this.setState(() => ({joinedGame: true , currentGameName: game}));
                 }
             })
             .catch(err => {
@@ -96,7 +96,7 @@ class LobbyContainer extends Component{
     removeGameHandler(game) {
         fetch("/games/removeGame", {
             method: "POST",
-            body: JSON.stringify({gamename: game}),
+            body: JSON.stringify({gameName: game}),
             credentials: "include"
         })
             .then(response => {
@@ -114,14 +114,14 @@ class LobbyContainer extends Component{
     watchGameHandler(game) {
         fetch("/games/watchGame", {
             method: "POST",
-            body: JSON.stringify({gamename: game}),
+            body: JSON.stringify({gameName: game}),
             credentials: "include"
         })
             .then(response => {
                 if (!response.ok) {
                     throw response;
                 } else {
-                    this.setState(() => ({watchGame: true , currentGamename: game}));
+                    this.setState(() => ({watchGame: true , currentGameName: game}));
                 }
             })
             .catch(err => {
@@ -130,20 +130,20 @@ class LobbyContainer extends Component{
     }
 
     leaveGameHandler(game) {
-        console.log("in leave game with "+ game);
+        console.log("in leave game with " + game);
         fetch("/games/leaveGame", {
             method: "POST",
-            body: JSON.stringify({gamename: game}),
+            body: JSON.stringify({gameName: game}),
             credentials: "include"
         })
             .then(response => {
                 if (!response.ok) {
                     throw response;
                 } else {
-                    if(this.state.joinedGame === true){
-                        this.setState(() => ({joinedGame: false , currentGamename: ""}));
-                    } else {//watch game
-                        this.setState(() => ({watchGame: false , currentGamename: ""}));
+                    if(this.state.joinedGame === true) {
+                        this.setState(() => ({joinedGame: false , currentGameName: ""}));
+                    } else { //watch game
+                        this.setState(() => ({watchGame: false , currentGameName: ""}));
                     }
                 }
             })

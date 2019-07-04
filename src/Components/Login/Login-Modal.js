@@ -1,28 +1,42 @@
 import React, {Component} from "react";
 import "./Login-Modal.css";
-//import {snackbarInvalid} from "../../engine/snackBars/snackBar";
 
 class LoginModal extends Component {
     constructor() {
         super();
-        this.state ={
+        this.state = {
             errMessage: ""
         }
-
         this.handleLogin = this.handleLogin.bind(this);        
     }
 
     render() {
         return (
-            <div className="login-page-wrapper">
-                <h1 className={"welcomeTitle"}>Welcome to Domino Online!</h1>
-                <h3 className={"welcomeSubTitle"}>Please register to enter the game lobby</h3>
-                <form onSubmit={this.handleLogin}>
-                    <label className="username-label" id={"usernameLabel"} htmlFor="userName"> Username: </label>
-                    <input className="username-input" name="userName"/>
-                    <input className="btn" id={"submit-btn"} type="submit" value="Login"/>
-                </form>
-                {this.renderErrorMessage()}
+            <div className="wrapper">
+                <div className="container">
+                    <h1 className="welcomeTitle">Welcome to Domino Online!</h1>
+                    <h3 className="welcomeSubTitle">Please register to enter the game lobby</h3>
+                    <form className="form" onSubmit={this.handleLogin}>
+                        <input className="username-input" placeholder="Username" name="userName"/>
+                        <button className="btn" id="login-button" type="submit" value="Login">Login</button>
+                    </form>
+                    {this.renderErrorMessage()}
+
+                    <ul className="bg-bubbles">
+                        <img src="bricks/brick1.jpg"/>
+                        <img src="bricks/brick2.jpg"/>
+                        <img src="bricks/brick3.jpg"/>
+                        <img src="bricks/brick4.jpg"/>
+                        <img src="bricks/brick5.jpg"/>
+                        <img src="bricks/brick6.jpg"/>
+                        <img src="bricks/brick7.jpg"/>
+                        <img src="bricks/brick8.jpg"/>
+                        <img src="bricks/brick9.jpg"/>
+                        <img src="bricks/brick10.jpg"/>
+                        <img src="bricks/brick11.jpg"/>
+                        <img src="bricks/brick12.jpg"/>
+	                </ul>
+                </div>
             </div>
         );
     }
@@ -48,7 +62,7 @@ class LoginModal extends Component {
                 this.props.loginSuccessHandler();
             } else {
                 if (res.status === 403) {
-                    //snackbarInvalid("User name already exist amigo");
+                    //snackbarInvalid("User name already exist");
                     //this.setState(()=> ({errMessage: "User name already exist, please try another one"}));
                 }
                 this.props.loginErrorHandler();

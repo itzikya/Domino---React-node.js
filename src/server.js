@@ -7,11 +7,12 @@ const userManagement = require('./Routes/userManagement');
 const gameManagement = require('./Routes/gameManagement');
 const auth = require('./Routes/usersAuth');
 
-app.get('/', (req, res) => {
-    res.send("Hello from express");
+app.get('/', (req, res, next) => {
+    console.log('hello from express');
+    next();
 });
 
-app.use(session({ secret: 'shmuliKippod', cookie: {maxAge:269999999999}}));
+app.use(session({ secret: 'nancyBotwin', cookie: {maxAge:269999999999}}));
 app.use(bodyParser.text());
 
 app.use(express.static(path.resolve(__dirname, "..", "public")));
@@ -19,7 +20,7 @@ app.use(express.static(path.resolve(__dirname, "..", "public")));
 app.use(express.static(path.join(__dirname, "..","public")));
 
 app.use('/users', userManagement);
-//app.use('/games', gameManagement);
+app.use('/games', gameManagement);
 
 app.listen(4000, console.log("Connected to port 4000!"));
 
