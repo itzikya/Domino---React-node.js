@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import Deck from "./Deck/Deck";
-import Board from "./Board/Board";
-import Control from "./Control/Control";
-import Popup from "./Popup";
-import GameTimer from "./Stats/Stats-Components/GameTimer/GameTimer";
+import Deck from "./Components/Deck/Deck";
+import Board from "./Components/Board/Board";
+import Control from "./Components/Control/Control";
+import Popup from "./Components/Popup/Popup";
+import GameTimer from "./Components/Stats/Stats-Components/GameTimer/GameTimer";
 
 import "./App.css";
 class StatsTimer {
@@ -152,7 +152,7 @@ class App extends Component {
     constructor() {
         super();
         this.state = {
-            numOfPlayers: 1, 
+            numOfPlayers: 2, 
             isGameStarted: false,
             isTimerStarted: false,
             isGameEnded: false,
@@ -160,6 +160,7 @@ class App extends Component {
             selectedBrick: { numbers: [],
                             status: ""},
             player1Deck: [],
+            player2Deck: [],
             boardBricks: [],
             playerDeck: [],
             myBoard: [],
@@ -237,22 +238,29 @@ class App extends Component {
                     [3, 6], [4, 4], [4, 5], [4, 6], [5, 5], [5, 6], [6, 6],
                     ];
 
-        for(let players = 0 ; players < this.state.numOfPlayers ; players++) {
-            let playerDeck = [];
+        //for(let players = 0 ; players < this.state.numOfPlayers ; players++) {
+            let playerDeck1 = [];
+            let playerDeck2 = [];
 
             for(let i = 0 ; i < 6 ; i++) {
                 let randomIndex = Math.floor(Math.random() * myPile.length);
-                playerDeck.push(myPile[randomIndex]);
+                playerDeck1.push(myPile[randomIndex]);
+                myPile = myPile.filter((item, j) => j !== randomIndex);
+            }
+            for(let i = 0 ; i < 6 ; i++) {
+                let randomIndex = Math.floor(Math.random() * myPile.length);
+                playerDeck2.push(myPile[randomIndex]);
                 myPile = myPile.filter((item, j) => j !== randomIndex);
             }
         
             this.setState(() => {
                 return {
                     myPile: myPile,
-                    player1Deck: playerDeck,
+                    player1Deck: playerDeck1,
+                    player2Deck: playerDeck2
                 }
             })
-        }
+        //}
     }
     
     checkDrawGlow() {
@@ -1021,6 +1029,14 @@ class App extends Component {
                         selectedBrick={this.state.selectedBrick}
                         />
 
+        const myDeck2 = <Deck 
+                        handleClickedBrick={this.handleClickedBrick} 
+                        handleMouseOver={this.handleMouseOver}
+                        handleMouseOut={this.handleMouseOut}
+                        myDeck={this.state.player2Deck} 
+                        selectedBrick={this.state.selectedBrick}
+                        />
+
         const myBoard = <Board 
                         isTimerStarted={this.state.isTimerStarted}
                         myBoard={this.state.myBoard}
@@ -1049,6 +1065,8 @@ class App extends Component {
                             <button className="my-button" onClick = {this.handleUndoClick}>Undo</button>
                         </div>
                         {this.state.isGameStarted ? myDeck : null}
+                        <br></br>
+                        {/*this.state.isGameStarted ? myDeck2 : null*/}
                     </div>
                 </div>
                 {this.state.isCheckEndGame ? this.checkEndGame() : null}

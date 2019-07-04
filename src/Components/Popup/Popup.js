@@ -1,5 +1,5 @@
 import React from "react";
-import Stats from "./Stats/Stats";
+import Stats from "../Stats/Stats";
 import "./Popup.css";
 
 class Popup extends React.Component {
