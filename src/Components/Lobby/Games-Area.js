@@ -46,21 +46,21 @@ class GamesArea extends Component {
                 <p>Status: {gameStatus}</p>
                 <p>Total players: {game.playersNum}</p>
                 <p>Registered Players:</p>
-                {game.players.map((player)=><p>{player}</p>)}
+                {game.players.map(player => <p>{player}</p>)}
                 <p>Spectators:</p>
-                {game.spectators.map((spec)=><p>{spec}</p>)}
+                {game.spectators.map(spec => <p>{spec}</p>)}
                 <button className="util btn gameArea" 
                         value={gameName} 
-                        onClick={()=> this.props.watchGameHandler(gameName)}>watch</button>
+                        onClick={() => this.props.watchGameHandler(gameName)}>watch</button>
                 {game.isActive === false ? 
                 <button className="util btn gameArea"
                         value={gameName} 
-                        onClick = {()=> this.props.joinGameHandler(gameName)}>join</button> : null }
+                        onClick = {() => this.props.joinGameHandler(gameName)}>join</button> : null }
 
                 {isUserAuthorizedToRemove === true && game.isActive === false ? 
                 <button className="util btn gameArea"
                         value={gameName} 
-                        onClick={()=> this.props.removeGameHandler(gameName)}>remove</button> : null }
+                        onClick={() => this.props.removeGameHandler(gameName)}>remove</button> : null }
             </div>
         )
     }

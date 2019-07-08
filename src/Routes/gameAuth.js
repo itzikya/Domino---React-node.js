@@ -120,7 +120,7 @@ function getSpectators(gameName) {
 
 function removeGameByName(gameName) { delete gamesList[gameName]; }
 
-function getGameInfo(gameName) { return gamesList[gameName]; }
+function getGameInfo(gameName) { console.log("in get Game Info: ", gamesList[gameName]); return gamesList[gameName]; }
 
 function gameAuthentication(gameName) { return gamesList[gameName] !== undefined; }
 
@@ -139,4 +139,4 @@ function updateIfGameReady(gameEntry) {
     }
 }
 
-module.exports = {removeGameByName, addSpectatorToGame,getSpectators, restartGameEntry, gameAuthentication, getGameInfo, leaveGame, getGamesList, addGameToAuthList, removeGameFromAuthList, addUserToGame}
+module.exports = {removeGameByName, addSpectatorToGame, getSpectators, restartGameEntry, gameAuthentication, getGameInfo, leaveGame, getGamesList, addGameToAuthList, removeGameFromAuthList, addUserToGame}

@@ -18,7 +18,7 @@ class Login extends Component {
         this.handleLoginError = this.handleLoginError.bind(this);
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.logoutHandler = this.logoutHandler.bind(this);
-        this.getUserName = this.getUserName.bind(this);
+        this.getUserName();
     }
 
     render() {        
