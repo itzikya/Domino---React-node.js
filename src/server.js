@@ -16,11 +16,10 @@ app.use(session({ secret: 'nancyBotwin', cookie: {maxAge:269999999999}}));
 app.use(bodyParser.text());
 
 app.use(express.static(path.resolve(__dirname, "..", "public")));
-
 app.use(express.static(path.join(__dirname, "..","public")));
 
 app.use('/users', userManagement);
 app.use('/games', gameManagement);
 
-app.listen(4000, console.log("Connected to port 4000!"));
+app.listen(3000, console.log("Connected to port 3000!"));
 

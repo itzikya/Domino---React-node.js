@@ -2,7 +2,9 @@ import React, {Component} from "react";
 import GamesArea from "./Games-Area";
 import UserList from "./Users-List";
 import GameEntryForm from "./Game-Entry-Form";
-import DominoLogo from '../../domino.png'
+import DominoLogo from "../../domino.png"
+import GameContainer from "./Game-Container";
+import Room from "./Room";
 import "./Lobby-Container.css";
 
 class LobbyContainer extends Component{
@@ -35,6 +37,10 @@ class LobbyContainer extends Component{
             )
         } else if(this.state.joinedGame === true) {
             return(
+                    /*<Room userName={this.state.userName}
+                          gameName={this.state.currentGameName}
+                          playerStatus={"waiting"}
+                          leaveGameHandler={this.leaveGameHandler.bind(this)} />*/
                     <GameContainer userName={this.state.userName}
                                    gameName={this.state.currentGameName}
                                    playerStatus={"waiting"}
@@ -42,10 +48,16 @@ class LobbyContainer extends Component{
             )
         } else if(this.state.watchGame === true) {
             return(
-                    <GameContainer username={this.state.username}
+                    /*<Room userName={this.state.userName}
+                          gameName={this.state.currentGameName}
+                          playerStatus={"spectator"}
+                          leaveGameHandler={this.leaveGameHandler.bind(this)} />
+                    */
+                      <GameContainer username={this.state.username}
                                    gameName={this.state.currentGameName}
                                    playerStatus={"spectator"}
                                    leaveGameHandler={this.leaveGameHandler.bind(this)} />
+                    
             )
         }
     }
@@ -67,7 +79,7 @@ class LobbyContainer extends Component{
             if (!response.ok) {
                 throw response;
             }
-            this.setState(()=>({showNewGameForm:false}));
+            this.setState(() => ({showNewGameForm:false}));
         })
         .catch(() => {
             //snackbarInvalid("Game name already exist");
@@ -81,16 +93,16 @@ class LobbyContainer extends Component{
             body: JSON.stringify({gameName: game}),
             credentials: "include"
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw response;
-                } else {
-                    this.setState(() => ({joinedGame: true , currentGameName: game}));
-                }
-            })
-            .catch(err => {
-                throw err;
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw response;
+            } else {
+                this.setState(() => ({joinedGame: true , currentGameName: game}));
+            }
+        })
+        .catch(err => {
+            throw err;
+        });
     }
 
     removeGameHandler(game) {
@@ -103,7 +115,7 @@ class LobbyContainer extends Component{
                 if (!response.ok) {
                     throw response;
                 } else {
-                    this.setState(()=> ({showNewGameForm: true}));
+                    this.setState(() => ({showNewGameForm: true}));
                 }
             })
             .catch(err => {
