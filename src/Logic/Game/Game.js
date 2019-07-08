@@ -149,15 +149,29 @@ class Player
         this.id = i_ID;
         this.isHuman = i_IsHuman;
         this.Hand = [];
-       // this.Stats = new Statistics();
-        this.Stats = "Ido";
+        this.Stats = new Statistics();
         this.UpdateStats = this.UpdateStats.bind(this);
+        this.GetClientStats = this.GetClientStats.bind(this);
 
     }
 
     UpdateStats(i_MoveWasDraw)
     {
-        //this.Stats.Update(this.Hand, i_MoveWasDraw);
+        this.Stats.Update(this.Hand, i_MoveWasDraw);
+    }
+
+    GetClientStats()
+    {
+        return{
+            id: this.id,
+            Hand:this.Hand,
+            isHuman: this.isHuman,
+            numOfTurns: this.Stats.numOfTurns,                           // 9.1
+            timeFromStartSeconds: this.Stats.timeFromStartSeconds,       // 9.2
+            avgTimeOfTurnSeconds: this.Stats.avgTimeOfTurnSeconds,       // 9.3   -- TimeFromStart/numOfTurns
+            numOfTileDraws: this.Stats.numOfTileDraws,                    // 9.4
+            sumOfHandWeight: this.sumOfHandWeight
+        };
     }
 }
 
@@ -184,6 +198,7 @@ class Game {
         this._nextTurn = this._nextTurn.bind(this);
         this._playerHasBrick = this._playerHasBrick.bind(this);
         this._checkEndGame = this._checkEndGame.bind(this);
+        this._rmvBrickFromHand = this._rmvBrickFromHand.bind(this);
         this.AddBrickToBoard = this.AddBrickToBoard.bind(this);
         this.IsLegalMove = this.IsLegalMove.bind(this);
         this.IsLegalDraw = this.IsLegalDraw.bind(this);
@@ -200,11 +215,9 @@ class Game {
         for(let i = 0; i < this.numOfPlayers; i++)
         {
             this.Players[i] = new Player(i_PlayerIDArr[i], true);
-            console.log("on init inside loop: ", i_PlayerIDArr[i])
         }
 
         this.playerTurnID = this.Players[0].id;
-        console.log("on init player turn: ", this.playerTurn);
     }
 
     _shuffle() 
@@ -257,7 +270,7 @@ class Game {
         let currPlayer = this.playerTurn;
         let currPlayerID = this.playerTurnID;
 
-        this.playerTurn =(this.playerTurn +1) % this.numOfPlayers;
+        this.playerTurn = (++this.playerTurn) % this.numOfPlayers;
         this.playerTurnID = this.Players[this.playerTurn].id;
 
         if(this.Players[this.playerTurn].Hand.length === 0) 
@@ -288,14 +301,11 @@ class Game {
 
     IsLegalMove(brick, id) 
     {
-        console.log("in IsLegalMove func in Game ", brick, id);
-        console.log("this player id: ", id, "this turn id: ", this.playerTurnID);
         if(!this._isPlayerTurn(id))
         {
             return false;
         }
         
-        console.log(this.myBoard);
         if(this.myBoard.length === 0) 
         {
            return true;
@@ -387,10 +397,8 @@ class Game {
 
         if(!this._isPlayerTurn(id) /*|| !this.IsLegalMove() /*|| !this._playerHasBrick(brick)*/)
         {
-            console.log("in addbrick in first condition");
             return false;
         }
-        console.log("in addbrick");
         let moveWasDraw = false;
         let myBoard = this.myBoard;
         let playersHand = this.Players[this.playerTurn].Hand;
@@ -402,7 +410,6 @@ class Game {
                                         column: 0}};
         /*if(!this.IsLegalMove(brick))
         {
-            console.log("in addbrick in islegalmove");
             return;
         }*/
         
@@ -410,14 +417,9 @@ class Game {
         //Zero Condition//
         if(myBoard.length === 0) 
         {
-            console.log(">> Board 1st brick");
-            console.log(brickToInsert);
-            console.log("My board before");
-            console.log(myBoard);
             myBoard.push([brickToInsert]);
-            console.log("After");
-            console.log(myBoard);
-            playersHand = playersHand.filter((item) => item !== brick);
+            //playersHand = playersHand.filter((item) => item !== brick);
+            found = true;
         }
         else 
         {
@@ -913,16 +915,32 @@ class Game {
                 }
             }
         }
-        console.log("the board:", myBoard);
-        console.log("the board brick:", myBoard[0][0].brick);
-       // this.myBoard = myBoard;
-       
-       this.Players[this.playerTurn].Hand = playersHand;
-       console.log("player's hand: ", playersHand);
+
+        this.myBoard = myBoard;
+        if(found)
+        {
+           this._rmvBrickFromHand(brick);
+        }
+
        this._nextTurn(moveWasDraw);
        //this.myBoard = [];
        // this._initPlayers();
         return (found);
+    }
+
+    _rmvBrickFromHand(brick)
+    {
+        let playersHand = this.Players[this.playerTurn].Hand;
+        for(let i = 0 ; i <playersHand.length; i++)
+        {
+            if(playersHand[i][0]==brick[0]&& playersHand[i][1] == brick[1])
+            {
+                playersHand.splice(i, 1);
+                break;
+            }
+        }
+
+        this.Players[this.playerTurn].Hand = playersHand;
     }
 
     DrawFromDeck(id)
@@ -933,7 +951,7 @@ class Game {
             return false;
         }
 
-        this.Players[this.playerTurn].Hand.push(this.Deck.pop);
+        this.Players[this.playerTurn].Hand.push(this.Deck.pop());
         this._nextTurn(moveWasDraw);
         return false;
     }
@@ -942,16 +960,20 @@ class Game {
         let listOfPlayers = [];
         let playerStats;
         let playerHand;
-        console.log("in get game state")
-        for(let i = 0; i < this.numOfPlayers; i++) {
+        let playersToSend =[];
+        for(let i = 0; i < this.numOfPlayers; i++) 
+        {
             let id = this.Players[i].id;
-            if(i_ID === id) {
+            if(i_ID === id) 
+            {
                 playerStats = this.Players[i].Stats;
             }
 
             let handSize = this.Players[i].Hand.length;
             let isHuman = this.Players[i].isHuman;
             listOfPlayers.push({id: id, isHuman: isHuman, handSize: handSize});
+
+            playersToSend.push(this.Players[i].GetClientStats());
         }
 
         return {
@@ -959,7 +981,7 @@ class Game {
             numOfPlayers: this.numOfPlayers,
             gameEnded: this.isGameEnded,
             listOfPlayers: listOfPlayers,
-            players: this.Players,
+            players: playersToSend,
             playerTurn: this.playerTurnID,
             deckSize: this.Deck.length,
             board: this.myBoard,
