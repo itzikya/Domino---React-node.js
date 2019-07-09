@@ -38,7 +38,6 @@ gameManagement.post("/initGame", gamesLogicAuth.initGame, (req,res) => {
 gameManagement.post("/gameStatus", (req,res) => {
     const gameName = JSON.parse(req.body).gameName;
     const userName = JSON.parse(req.body).userName;
-    console.log("in game management");
     const gameStatus = gamesLogicAuth.getGameStatus(gameName, userName);
     /*if(gameStatus){
         gameStatus.spectators = gamesAuth.getSpectators(gameName);
@@ -47,8 +46,6 @@ gameManagement.post("/gameStatus", (req,res) => {
     //res.data = gameStatus;
  
 
-  //  console.log("stringify");
-    //console.log(JSON.stringify(gameStatus));
     res.json(gameStatus);
     //res.status(200).send(JSON.stringify(gameStatus));
 });
