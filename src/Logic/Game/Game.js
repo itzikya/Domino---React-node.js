@@ -202,9 +202,10 @@ class Game {
         this.AddBrickToBoard = this.AddBrickToBoard.bind(this);
         this.IsLegalMove = this.IsLegalMove.bind(this);
         this.IsLegalDraw = this.IsLegalDraw.bind(this);
-        this.DrawFromDeck = this.DrawFromDeck.bind(this);
         this.GetGameState = this.GetGameState.bind(this);
+        this.ExecuteADraw = this.ExecuteADraw.bind(this);
         this.getJSONgameSummery = this.getJSONgameSummery.bind(this);
+
 
         this._initPlayers(i_PlayerIDArr);
         this._initDeckAndHands();
@@ -256,12 +257,12 @@ class Game {
 
     _nextTurn(moveWasDraw)
     {
-        this._checkEndGame();
-        this.Players[this.playerTurn].UpdateStats(moveWasDraw);
-        this.Players[this.playerTurn].Stats.TurnEnd();
+        //this._checkEndGame();
+        //this.Players[this.playerTurn].UpdateStats(moveWasDraw);
+        //this.Players[this.playerTurn].Stats.TurnEnd();
         this.playerTurn = (++this.playerTurn) % this.numOfPlayers;
         this.playerTurnID = this.Players[this.playerTurn].id;
-        this.Players[this.playerTurn].Stats.TurnStart();
+        //this.Players[this.playerTurn].Stats.TurnStart();
 
     }
 
@@ -368,18 +369,14 @@ class Game {
         return false;
     }
 
-    IsLegalDraw(id) 
-    {
+    IsLegalDraw(id) {
         let canDrawTile = true;
-        if(!this._isPlayerTurn(id))
-        {
+        if(!this._isPlayerTurn(id)) {
             return false;
         }
 
-        for (const tile of this.Players[this.playerTurn].Hand)
-        {
-           if(this.IsLegalMove(tile)) 
-            {
+        for (const tile of this.Players[this.playerTurnID].Hand) {
+           if(this.IsLegalMove(tile)) {
                 canDrawTile = false;
                 break;
             }
@@ -943,13 +940,9 @@ class Game {
         this.Players[this.playerTurn].Hand = playersHand;
     }
 
-    DrawFromDeck(id)
+    ExecuteADraw()
     {
         let moveWasDraw = true;
-        if(!this._isPlayerTurn(id) || !this.IsLegalDraw())
-        {
-            return false;
-        }
 
         this.Players[this.playerTurn].Hand.push(this.Deck.pop());
         this._nextTurn(moveWasDraw);

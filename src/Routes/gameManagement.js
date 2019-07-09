@@ -69,6 +69,14 @@ gameManagement.post("/addBrick", gamesLogicAuth.addBrick, (req,res) => {
     res.sendStatus(200);
 });
 
+gameManagement.post("/isLegalDraw", gamesLogicAuth.isLegalDraw, (req,res) => {
+    res.sendStatus(200);
+});
+
+gameManagement.post("/executeADraw", gamesLogicAuth.executeADraw, (req,res) => {
+    res.sendStatus(200);
+});
+
 /*
 gameManagement.post("/chooseColor", gamesLogicAuth.chooseColor, (req,res) => {
     res.sendStatus(200);
