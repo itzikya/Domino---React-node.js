@@ -37,9 +37,8 @@ function isLegalMove(req, res, next) {
     const parsedReq = JSON.parse(req.body);
     const gameName = parsedReq.gameName;
     const brick = parsedReq.brick;
-    const userName = parsedReq.userName;
 
-    if(gamesLogicList[gameName].IsLegalMove(brick, userName) === true ){
+    if(gamesLogicList[gameName].IsLegalMove(brick) === true ){
         next();
     } else {
         res.sendStatus(403);

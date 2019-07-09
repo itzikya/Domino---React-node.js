@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-//import {snackbarStatusMessage,snackbarInvalid} from '../../engine/snackBars/snackBar.js';
+import {statusMessage, invalidMessage} from "../Popup/MessagePopup";
 import "./Game-Container.css";
 import DominoLogo from "../../domino.png";
 //import DominoBox from "../../‏‏domino-box.JPG";
@@ -177,7 +177,7 @@ class GameContainer extends Component{
             const playersHand = this.state.gameStatus.players[index].Hand;
             const opponentContainer = this.calcPlayerContainerName(playerName);
             const opponentDisplay = playersHand.map((brick, index) =>
-                <img src="https://thumbs.dreamstime.com/z/domino-box-game-13132675.jpg" className={"opponent-brick"} key={brick}/>);
+                <img /*src="https://thumbs.dreamstime.com/z/domino-box-game-13132675.jpg"*/ className={"opponent-brick"} key={brick}/>);
             return (<div className={opponentContainer}>{opponentDisplay}
                         <div className={"userName"}>{playerName}
                         </div>
@@ -241,58 +241,81 @@ class GameContainer extends Component{
 //----------------------------------------------------HANDLERS----------------------------------------------------------
 
     handleClickedBrick(brick) {
-        fetch("/games/isLegalMove", {
-            method: "POST",
-            body: JSON.stringify({gameName: this.props.gameName,
-                                  userName: this.props.userName,
-                                  brick: brick}),
-            credentials: "include"
-        })
-        .then(response => {
-            if (!response.ok) {
-                //need to implement:
-                //Not valid move/ Not Your Turn/ you're not a player
-                console.log(">>>>>>>>> Error: " + response);
-                throw response;
+        if(this.state.isActive === true) {
+            if(this.state.gameStatus.playerTurn === this.props.userName) {
+                fetch("/games/isLegalMove", {
+                    method: "POST",
+                    body: JSON.stringify({gameName: this.props.gameName,
+                                          userName: this.props.userName,
+                                          brick: brick}),
+                    credentials: "include"
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        this.notificationManager("Invalid Move!", notificationConst.INVALID_MOVE);
+                        console.log(">>>>>>>>> Error: " + response);
+                        throw response;
+                    }
+                    console.log(">>>>>>>> OK! " + response);
+                    fetch("/games/addBrick", {
+                        method: "POST",
+                        body: JSON.stringify({gameName: this.props.gameName,
+                                              userName: this.props.userName,
+                                              brick: brick}),
+                        credentials: "include"
+                    })
+                    .then(response => {
+                        console.log("after addBrick: ", response)})
+                })
             }
-            console.log(">>>>>>>> OK! " + response);
-            fetch("/games/addBrick", {
-                method: "POST",
-                body: JSON.stringify({gameName: this.props.gameName,
-                                      userName: this.props.userName,
-                                      brick: brick}),
-                credentials: "include"
-            })
-            .then(response => {
-                console.log("after addBrick: ", response)})
-        })
+            else {
+                if(this.state.playerStatus === playerStatusConst.SPECTATOR) {
+                    this.notificationManager("You're just a spectator", notificationConst.INVALID_MOVE);
+                }/* else if(this.state.playerStatus === playerStatusConst.FINISHED_CARDS) {
+                    this.notificationManager("you already finished your cards man",notificationConst.INVALID_MOVE);
+                }*/ else {
+                    this.notificationManager("It's not your turn", notificationConst.INVALID_MOVE);
+                }
+            }
+            
+        }
     }
 
     handleMouseOver(brick) {
-        fetch("/games/isLegalMove", {
-            method: "POST",
-            body: JSON.stringify({gameName: this.props.gameName,
-                                  userName: this.props.userName,
-                                  brick: brick}),
-            credentials: "include"
-        })
-        .then(response => {
-            if (!response.ok) {
-                console.log(response);
-                this.setState(() => {
-                    return {selectedBrick: {numbers: brick,
-                                            status: "invalid"}
+        if(this.state.isActive === true) {
+            if(this.state.gameStatus.playerTurn === this.props.userName) {
+                fetch("/games/isLegalMove", {
+                    method: "POST",
+                    body: JSON.stringify({gameName: this.props.gameName,
+                                          brick: brick}),
+                    credentials: "include"
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.log(response);
+                        this.setState(() => {
+                            return {selectedBrick: {numbers: brick,
+                                                    status: "invalid"}
+                            }
+                        })
+                    }
+                    else {
+                        this.setState(() => {
+                            return {selectedBrick: {numbers: brick,
+                                                    status: "valid"}
+                            }
+                        })
                     }
                 })
             }
             else {
                 this.setState(() => {
                     return {selectedBrick: {numbers: brick,
-                                            status: "valid"}
+                                            status: "invalid"}
                     }
                 })
             }
-        })
+        }
     }
        
 
@@ -305,30 +328,41 @@ class GameContainer extends Component{
     }
 
     handleDrawClick() {
-        const playerIndex = this.state.players.indexOf(playerName);
-        const myHand = this.state.gameStatus.players[playerIndex].Hand;
-        if(myHand.length === 0) {
-            //no more cards
-        }
-        else {
-            fetch("/games/isLegalDraw", {
-                method: "POST",
-                body: JSON.stringify({gameName: this.props.gameName,
-                                      userName: this.props.userName}),
-                credentials: "include"
-            })
-            .then(response => {
-                if(!response.ok) {
-                    //error to handle
+        if(this.state.isActive === true) {
+            if(this.state.gameStatus.playerTurn === this.props.userName) {
+                if(this.state.gameStatus.deckSize === 0) {
+                    this.notificationManager("No more bricks in deck!", notificationConst.INVALID_MOVE);
                 }
                 else {
-                    fetch("/games/executeADraw", {
+                    fetch("/games/isLegalDraw", {
                         method: "POST",
                         body: JSON.stringify({gameName: this.props.gameName}),
                         credentials: "include"
                     })
+                    .then(response => {
+                        if(!response.ok) {
+                            //invalid draw
+                            this.notificationManager("Draw is not legal", notificationConst.INVALID_MOVE);
+                        }
+                        else {
+                            fetch("/games/executeADraw", {
+                                method: "POST",
+                                body: JSON.stringify({gameName: this.props.gameName}),
+                                credentials: "include"
+                            })
+                        }
+                    })
                 }
-            })
+            }
+            else {
+                if(this.state.playerStatus === playerStatusConst.SPECTATOR) {
+                    this.notificationManager("You're just a spectator", notificationConst.INVALID_MOVE);
+                }/* else if(this.state.playerStatus === playerStatusConst.FINISHED_CARDS) {
+                    this.notificationManager("you already finished your cards man",notificationConst.INVALID_MOVE);
+                }*/ else {
+                    this.notificationManager("It's not your turn", notificationConst.INVALID_MOVE);
+                }
+            }
         }
     }
 
@@ -492,10 +526,10 @@ class GameContainer extends Component{
     notificationManager(notification, notificationType) {
         switch (notificationType) {
             case notificationConst.PRE_GAME_STATUS:
-                //snackbarStatusMessage(notification);
+                statusMessage(notification);
                 break;
             case notificationConst.INVALID_MOVE:
-                //snackbarInvalid(notification);
+                invalidMessage(notification);
                 break;
         }
     }
