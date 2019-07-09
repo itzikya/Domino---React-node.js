@@ -14,7 +14,7 @@ class Deck extends Component {
         this.handleClickedBrick = this.handleClickedBrick.bind(this);
         this.handleMouseOver = this.handleMouseOver.bind(this);
         this.handleMouseOut = this.handleMouseOut.bind(this);
-        //this.selectedBrick = this.selectedBrick.bind(this);
+        this.selectedBrick = this.selectedBrick.bind(this);
         this.handleDrop = this.handleDrop.bind(this);
     }
 
@@ -40,7 +40,7 @@ class Deck extends Component {
     handleMouseOut() {
         this.props.handleMouseOut();
     }
-/*
+
     selectedBrick(brick) {
         if(brick === this.props.selectedBrick.numbers) {
             return (this.props.selectedBrick.status);
@@ -49,7 +49,7 @@ class Deck extends Component {
             return "neutral";
         }
     }
-*/
+
     handleDrop(e, con) {
         this.props.handleDrop(e, con);
     }
@@ -62,7 +62,7 @@ class Deck extends Component {
             handleDrop={this.handleDrop}
             numbers={brick}
             isDeckBrick={true}
-            //status={this.selectedBrick(brick)}
+            status={this.selectedBrick(brick)}
             key={`brick${brick[0]}${brick[1]}`} 
             />)
         

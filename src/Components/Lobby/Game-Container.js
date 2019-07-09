@@ -2,6 +2,7 @@ import React, {Component} from "react";
 //import {snackbarStatusMessage,snackbarInvalid} from '../../engine/snackBars/snackBar.js';
 import "./Game-Container.css";
 import DominoLogo from "../../domino.png";
+//import DominoBox from "../../‏‏domino-box.JPG";
 import Board from "../Board/Board";
 import Deck from "../Deck/Deck";
 
@@ -35,10 +36,11 @@ class GameContainer extends Component{
         this.getGameInfo = this.getGameInfo.bind(this);
         this.initGame = this.initGame.bind(this);
         this.getGameStatus = this.getGameStatus.bind(this);
-        this.renderTablePackTop = this.renderTablePackTop.bind(this);
-        this.renderPlayerHand = this.renderPlayerHand.bind(this);
+        //this.renderTablePackTop = this.renderTablePackTop.bind(this);
+        this.renderMyHand = this.renderMyHand.bind(this);
         this.renderOpponentHand = this.renderOpponentHand.bind(this);
         this.renderStatistics = this.renderStatistics.bind(this);
+        this.renderGame = this.renderGame.bind(this);
         this.renderGameBoard = this.renderGameBoard.bind(this);
         this.renderForSpectator = this.renderForSpectator.bind(this);
         this.notificationManager = this.notificationManager.bind(this);
@@ -48,6 +50,7 @@ class GameContainer extends Component{
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleMouseOver = this.handleMouseOver.bind(this);
         this.handleClickedBrick = this.handleClickedBrick.bind(this);
+        this.handleDrawClick = this.handleDrawClick.bind(this);
     }
 
     componentWillMount(){
@@ -69,26 +72,26 @@ class GameContainer extends Component{
                         id={"leaveBtn"}
                         value={this.props.gameName} 
                         onClick={() => this.props.leaveGameHandler(this.props.gameName)}></button> : null}
-                {this.state.isActive === true || this.state.gameSummery !== null ? this.renderGameBoard() : null}
+                {this.state.isActive === true || this.state.gameSummery !== null ? this.renderGame() : null}
             </div>
         )
     }
 
 //----------------------------------------------------RENDERERS---------------------------------------------------------
 
-    renderGameBoard(){
+    renderGame(){
         return(
             <div className={"gameBoard-container"}>
                 {/*this.renderStatistics()*/}
                 {/*this.renderSpectatorList()*/}
                 <div className={"theGame"}>
                     {/*this.renderChooseColorButton()*/}
-                    {this.renderTablePackTop()}
-                    {/*this.renderTheDeck()*/}
+                    {this.renderGameBoard()}
+                    {this.renderTheDeck()}
                     {
                     <div className={"playersContainer"}>
-                        {this.state.playerStatus !== playerStatusConst.SPECTATOR ? this.renderPlayerHand() : null}
-                        {/*this.state.playerStatus !== playerStatusConst.SPECTATOR ? this.state.players.map(this.renderOpponentHand) : null */}
+                        {this.state.playerStatus !== playerStatusConst.SPECTATOR ? this.renderMyHand() : null}
+                        {this.state.playerStatus !== playerStatusConst.SPECTATOR ? this.state.players.map(this.renderOpponentHand) : null }
                         {/*this.state.playerStatus === playerStatusConst.SPECTATOR ? this.state.players.map(this.renderForSpectator) : null */}
                     </div>}
             </div>
@@ -98,11 +101,25 @@ class GameContainer extends Component{
     }
 
     renderTheDeck() {
-        const isDisabled = this.props.userName !== this.state.gameStatus.currentPlayer ? "disabled" : "";
-        return <img src = {`/resources/deck_.png`} id = {'deck'} className={isDisabled} onClick = {this.takeCardHandler}/>
+        return (
+            <div className="draw-buttons">
+                <div className="draw">
+                    {this.state.isPileEmpty ? <p>No more bricks!</p> : null}
+                    <button className="my-button" 
+                            onClick={this.handleDrawClick}
+                            status={this.state.isLeftMoves}>Draw
+                    </button>
+                </div>
+                <div>
+                    <button className="my-button" 
+                            onClick = {this.handleUndoClick}>Undo
+                    </button>
+                </div>
+            </div>
+        )
     }
 
-    renderTablePackTop() {
+    renderGameBoard() {
         const myBoard = <Board 
                         //isTimerStarted={this.state.isTimerStarted}
                         myBoard={this.state.gameStatus.board}
@@ -118,7 +135,7 @@ class GameContainer extends Component{
                         <div className="right-nav">
                             {/*<GameTimer isTimerStarted={this.state.isTimerStarted} />*/}
                             {/*<Control func={this.handleGame}/>*/}
-                            <div className="draw">
+                            {/*<div className="draw">
                                 {this.state.isPileEmpty ? <p>No more bricks!</p> : null}
                                 <button className="my-button" 
                                     onClick={this.handleDrawClick}
@@ -126,7 +143,7 @@ class GameContainer extends Component{
                             </div>
                             <div>
                                 <button className="my-button" onClick = {this.handleUndoClick}>Undo</button>
-                            </div>
+                            </div>*/}
                             {/* myDeck */}
                             <br></br>
                             {/*this.state.isGameStarted ? myDeck2 : null*/}
@@ -138,7 +155,7 @@ class GameContainer extends Component{
         )
     }
 
-    renderPlayerHand() {
+    renderMyHand() {
         const playerIndex = this.state.players.indexOf(this.props.userName);
         const playerHand = this.state.gameStatus.players[playerIndex].Hand;
         const myHand = <Deck 
@@ -146,22 +163,25 @@ class GameContainer extends Component{
                         handleMouseOver={this.handleMouseOver}
                         handleMouseOut={this.handleMouseOut}
                         myDeck={playerHand} 
-                        //selectedBrick={this.state.selectedBrick}
+                        selectedBrick={this.state.selectedBrick}
                         />
         return (
-            <div className="hand">
+            <div className="right-nav">
                 {myHand}
             </div>
         )
     }
 
-    renderOpponentHand(playerName,index) {
+    renderOpponentHand(playerName, index) {
         if (playerName !== this.props.userName) {
-            const playersHand = this.state.gameStatus.playersCards[index];
-            const cardsContainer = this.calcCardContainer(playerName);
-            const cardsDisplay = playersHand.map((cardId,index) =>
-                <img src={'/resources/CardBack.png'} id={cardId} className={"playerCard"} key={cardId}/>);
-            return (<div className={cardsContainer}>{cardsDisplay}<div className={"userName"}>{playerName}</div></div>)
+            const playersHand = this.state.gameStatus.players[index].Hand;
+            const opponentContainer = this.calcPlayerContainerName(playerName);
+            const opponentDisplay = playersHand.map((brick, index) =>
+                <img src="https://thumbs.dreamstime.com/z/domino-box-game-13132675.jpg" className={"opponent-brick"} key={brick}/>);
+            return (<div className={opponentContainer}>{opponentDisplay}
+                        <div className={"userName"}>{playerName}
+                        </div>
+                    </div>)
         }
         return null;
     }
@@ -188,7 +208,7 @@ class GameContainer extends Component{
 
     renderForSpectator(playerName,index) {
         const playersHand = this.state.gameStatus.playersCards[index];
-        const cardsContainer = this.calcCardContainer(playerName);
+        const cardsContainer = this.calcPlayerContainerName(playerName);
         const cardsDisplay = playersHand.map((cardId) => {
             const cardIdArr = cardId.split('-');
             return <img src = {`/resources/${cardIdArr[1]}${cardIdArr[0]}.png`} className = {"playerCard"} id = {cardId} key={cardId}/>;
@@ -230,6 +250,8 @@ class GameContainer extends Component{
         })
         .then(response => {
             if (!response.ok) {
+                //need to implement:
+                //Not valid move/ Not Your Turn/ you're not a player
                 console.log(">>>>>>>>> Error: " + response);
                 throw response;
             }
@@ -241,9 +263,10 @@ class GameContainer extends Component{
                                       brick: brick}),
                 credentials: "include"
             })
-        .then(response => {
-            console.log("after addBrick: ", response)})
-        })}
+            .then(response => {
+                console.log("after addBrick: ", response)})
+        })
+    }
 
     handleMouseOver(brick) {
         fetch("/games/isLegalMove", {
@@ -256,28 +279,58 @@ class GameContainer extends Component{
         .then(response => {
             if (!response.ok) {
                 console.log(response);
-                throw response;
-            }
-            else { 
-                if(!response) {
                 this.setState(() => {
                     return {selectedBrick: {numbers: brick,
-                                            status: "invalid"}}})
-                }
-                else {
-                    this.setState(() => {
-                        return {selectedBrick: {numbers: brick,
-                                                status: "valid"}}})}
-
+                                            status: "invalid"}
+                    }
+                })
             }
-        })}
+            else {
+                this.setState(() => {
+                    return {selectedBrick: {numbers: brick,
+                                            status: "valid"}
+                    }
+                })
+            }
+        })
+    }
+       
 
     handleMouseOut() { 
         this.setState(() => {
             return {selectedBrick: {numbers: [],
-                                        status: "neutral"}}})
+                                    status: "neutral"}
+            }
+        })
     }
 
+    handleDrawClick() {
+        const playerIndex = this.state.players.indexOf(playerName);
+        const myHand = this.state.gameStatus.players[playerIndex].Hand;
+        if(myHand.length === 0) {
+            //no more cards
+        }
+        else {
+            fetch("/games/isLegalDraw", {
+                method: "POST",
+                body: JSON.stringify({gameName: this.props.gameName,
+                                      userName: this.props.userName}),
+                credentials: "include"
+            })
+            .then(response => {
+                if(!response.ok) {
+                    //error to handle
+                }
+                else {
+                    fetch("/games/executeADraw", {
+                        method: "POST",
+                        body: JSON.stringify({gameName: this.props.gameName}),
+                        credentials: "include"
+                    })
+                }
+            })
+        }
+    }
 
 //--------------------------------------------------GAME-STATUS---------------------------------------------------------
 
@@ -423,18 +476,15 @@ class GameContainer extends Component{
         }
     }
 
-    calcCardContainer(playerName) {
+    calcPlayerContainerName(playerName) {
         let placeOnBoard;
         const playersNum = this.state.players.length;
         const playerIndex = this.state.players.indexOf(playerName);
-        if(playersNum === 2){
+        if(playersNum === 2) {
             placeOnBoard = playerIndex === 0 ? 1 : 3;
         }
-        else if(playersNum === 3){
-            placeOnBoard = playerIndex === 2 ? 4 : playerIndex + 1;
-        }
-        else {
-            placeOnBoard = playerIndex + 1;
+        else if(playersNum === 3) {
+            placeOnBoard = playerIndex === 1 ? 4 : playerIndex + 1;
         }
         return `player${placeOnBoard}-container`;
     }

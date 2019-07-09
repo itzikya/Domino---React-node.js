@@ -56,6 +56,25 @@ function addBrick(req, res, next) {
     next();
 }
 
+function isLegalDraw(req, res, next) {
+    const parsedReq = JSON.parse(req.body);
+    const gameName = parsedReq.gameName;
+    const userName = parsedReq.userName;
+    
+    if(gamesLogicList[gameName].IsLegalDraw(userName) === true ){
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
+
+function executeADraw(req, res, next) {
+    const parsedReq = JSON.parse(req.body);
+    const gameName = parsedReq.gameName;
+    gamesLogicList[gameName].ExecuteADraw();
+    next();
+}
+
 function restartGameLogic(gamename) {
     if(gamesLogicList[gamename] !== undefined){
         gamesLogicList[gamename] = undefined;
@@ -63,5 +82,5 @@ function restartGameLogic(gamename) {
 }
 
 
-module.exports = {/*restartGameLogic, */isLegalMove, addBrick, getGameSummery, getGameStatus, initGame}
+module.exports = {executeADraw, isLegalDraw, isLegalMove, addBrick, getGameSummery, getGameStatus, initGame}
 

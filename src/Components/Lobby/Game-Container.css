@@ -17,6 +17,60 @@
     justify-content: center;  
 }
 
+.player1-container {
+    display: flex;
+    position: absolute;
+    /*border:2px solid;*/
+    padding: 5px;
+
+    /*border-color:green;*/
+    top: 252px;
+    left: 155px;
+    width: 680px;
+
+    justify-content: center;
+}
+
+.player2-container {
+    display: flex;
+    justify-content: center;
+
+    right: 652px;
+    width: 500px;
+
+    position: absolute;
+    margin: 0;
+    padding: 5px;
+    transform: rotate(90deg);
+    top: 42px;
+}
+
+.player3-container {
+    display: flex;
+    justify-content: center;
+
+    position: absolute;
+    margin: 0;
+    padding: 5px;
+
+    left: 155px;
+    width: 680px;
+    bottom: 98px;
+}
+
+.player4-container {
+    display: flex;
+    justify-content: center;
+
+    transform: rotate(270deg);
+    left: 650px;
+    width: 500px;
+    top: 40px;
+    position: absolute;
+    margin: 0;
+    padding: 5px;
+}
+
 body {
     /*display: flex;*/
     /*justify-content: center;*/
