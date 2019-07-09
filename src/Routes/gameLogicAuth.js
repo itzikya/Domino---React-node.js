@@ -51,7 +51,6 @@ function addBrick(req, res, next) {
     const gameName = parsedReq.gameName;
     const userName = parsedReq.userName;
     const brick = parsedReq.brick;
-    console.log("in addBrick in gameLogicAuth: ", gamesLogicList[gameName]);
     gamesLogicList[gameName].AddBrickToBoard(brick, userName);
     next();
 }
