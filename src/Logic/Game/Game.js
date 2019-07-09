@@ -912,14 +912,6 @@ class Game {
                 }
             }
         }
-<<<<<<< HEAD
-        console.log("the board:", myBoard);
-        console.log("the board brick:", myBoard[0][0].brick);
-        this.myBoard = myBoard;
-       
-       this.Players[this.playerTurn].Hand = playersHand;
-       console.log("player's hand: ", playersHand);
-=======
 
         this.myBoard = myBoard;
         if(found)
@@ -927,16 +919,12 @@ class Game {
            this._rmvBrickFromHand(brick);
         }
 
->>>>>>> master
        this._nextTurn(moveWasDraw);
        //this.myBoard = [];
        // this._initPlayers();
         return (found);
     }
 
-<<<<<<< HEAD
-    ExecuteADraw()
-=======
     _rmvBrickFromHand(brick)
     {
         let playersHand = this.Players[this.playerTurn].Hand;
@@ -952,8 +940,7 @@ class Game {
         this.Players[this.playerTurn].Hand = playersHand;
     }
 
-    DrawFromDeck(id)
->>>>>>> master
+    ExecuteADraw()
     {
         let moveWasDraw = true;
 
