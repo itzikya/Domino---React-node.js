@@ -300,13 +300,14 @@ class Game {
         return false;
     }
 
-    IsLegalMove(brick, id) 
+    IsLegalMove(brick) 
     {
+        /*
         if(!this._isPlayerTurn(id))
         {
             return false;
         }
-        
+        */
         if(this.myBoard.length === 0) 
         {
            return true;
@@ -369,33 +370,42 @@ class Game {
         return false;
     }
 
-    IsLegalDraw(id) {
+    IsLegalDraw() {
         let canDrawTile = true;
+        /*
         if(!this._isPlayerTurn(id)) {
             return false;
         }
-
-        for (const tile of this.Players[this.playerTurnID].Hand) {
-           if(this.IsLegalMove(tile)) {
-                canDrawTile = false;
-                break;
-            }
+        */
+        if(this.myBoard.length === 0) {
+            canDrawTile = false;
+        }
+        else {
+            for (const tile of this.Players[this.playerTurn].Hand) {
+                if(this.IsLegalMove(tile)) {
+                    canDrawTile = false;
+                    break;
+                }
+            }   
         }
 
         return canDrawTile;
     }
 
-    AddBrickToBoard(brick, id) 
+    AddBrickToBoard(brick) 
     {
         let found = false;
         let currBrick = null;
         let row = null;
         let column = null;
 
-        if(!this._isPlayerTurn(id) /*|| !this.IsLegalMove() /*|| !this._playerHasBrick(brick)*/)
+        /*
+        if(!this._isPlayerTurn(id) || !this.IsLegalMove() /*|| !this._playerHasBrick(brick))
         {
             return false;
         }
+        */
+
         let moveWasDraw = false;
         let myBoard = this.myBoard;
         let playersHand = this.Players[this.playerTurn].Hand;
