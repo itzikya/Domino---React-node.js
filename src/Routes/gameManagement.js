@@ -39,25 +39,14 @@ gameManagement.post("/gameStatus", (req,res) => {
     const gameName = JSON.parse(req.body).gameName;
     const userName = JSON.parse(req.body).userName;
     const gameStatus = gamesLogicAuth.getGameStatus(gameName, userName);
-    /*if(gameStatus){
+    if(gameStatus){
         gameStatus.spectators = gamesAuth.getSpectators(gameName);
-    }*/
+    }
     //let data = JSON.stringify(gameStatus);
     //res.data = gameStatus;
  
 
     res.json(gameStatus);
-    //res.status(200).send(JSON.stringify(gameStatus));
-});
-
-gameManagement.post("/gameSummery", (req,res) => {
-    const gameName = JSON.parse(req.body).gameName;
-    const gameSummery = gamesLogicAuth.getGameSummery(gameName);
-    setTimeout(() => {gamesAuth.restartGameEntry(gameName);}, 5000);
-    setTimeout(() => {gamesLogicAuth.restartGameLogic(gameName);}, 5000);
-    gameSummery.board=[];
-    
-    res.json(gameSummery);
 });
 
 
@@ -76,12 +65,6 @@ gameManagement.post("/isLegalDraw", gamesLogicAuth.isLegalDraw, (req,res) => {
 gameManagement.post("/executeADraw", gamesLogicAuth.executeADraw, (req,res) => {
     res.sendStatus(200);
 });
-
-/*
-gameManagement.post("/chooseColor", gamesLogicAuth.chooseColor, (req,res) => {
-    res.sendStatus(200);
-});
-*/
 
 //GET ROUTES
 gameManagement.get("/allGames", (req, res) => {

@@ -4,8 +4,8 @@ import UserList from "./Users-List";
 import GameEntryForm from "./Game-Entry-Form";
 import DominoLogo from "../../domino.png"
 import GameContainer from "./Game-Container";
-import Room from "./Room";
 import "./Lobby-Container.css";
+import {invalidMessage} from "../Popup/MessagePopup";
 
 class LobbyContainer extends Component{
     constructor(props) {
@@ -23,7 +23,7 @@ class LobbyContainer extends Component{
         if(this.state.joinedGame === false && this.state.watchGame === false) {
             return(
                 <div className="lobby-container">
-                    <img className="logo" src={DominoLogo}></img>
+                    {<img className="logo" src={DominoLogo}></img>}
                     <button className="util btn" id="logoutBtn" onClick={this.props.logoutHandler}></button>
                     <UserList />
                     {this.state.showNewGameForm ? 
@@ -36,23 +36,14 @@ class LobbyContainer extends Component{
                 </div>
             )
         } else if(this.state.joinedGame === true) {
-            return(
-                    /*<Room userName={this.state.userName}
-                          gameName={this.state.currentGameName}
-                          playerStatus={"waiting"}
-                          leaveGameHandler={this.leaveGameHandler.bind(this)} />*/
+            return (
                     <GameContainer userName={this.state.userName}
                                    gameName={this.state.currentGameName}
                                    playerStatus={"waiting"}
                                    leaveGameHandler={this.leaveGameHandler.bind(this)} />
             )
         } else if(this.state.watchGame === true) {
-            return(
-                    /*<Room userName={this.state.userName}
-                          gameName={this.state.currentGameName}
-                          playerStatus={"spectator"}
-                          leaveGameHandler={this.leaveGameHandler.bind(this)} />
-                    */
+            return (
                       <GameContainer username={this.state.username}
                                    gameName={this.state.currentGameName}
                                    playerStatus={"spectator"}
@@ -67,13 +58,12 @@ class LobbyContainer extends Component{
 
         const gameName = e.target.elements.name.value;
         const playersNum = e.target.elements.playersNum.value;
-        const isCompPlay = document.getElementById("isCompPlay").checked;
 
         fetch("/games/addGame", {
             method: "POST",
             body: JSON.stringify({gameName: gameName, 
                                   playersNum: playersNum, 
-                                  isCompPlay: isCompPlay}),
+                                }),
             credentials: "include"})
         .then(response => {
             if (!response.ok) {
@@ -82,7 +72,7 @@ class LobbyContainer extends Component{
             this.setState(() => ({showNewGameForm:false}));
         })
         .catch(() => {
-            //snackbarInvalid("Game name already exist");
+            invalidMessage("Game name already exist");
         });
         return false;
     }
@@ -142,7 +132,6 @@ class LobbyContainer extends Component{
     }
 
     leaveGameHandler(game) {
-        console.log("in leave game with " + game);
         fetch("/games/leaveGame", {
             method: "POST",
             body: JSON.stringify({gameName: game}),

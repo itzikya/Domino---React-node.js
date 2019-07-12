@@ -4,12 +4,11 @@ const gameLogic = require('../Logic/Game/Game');
 const gamesLogicList = {};
 
 //MIDDLEWARE FUNCS
-function initGame(req, res, next){
+function initGame(req, res, next) {
     const newGameReq = JSON.parse(req.body);
     const gameName = newGameReq.gameName;
     const playersArr = newGameReq.players;
     const numPlayers = playersArr.length;
-    const isCompPlay = playersArr[playersArr.length - 1] === "compy";
 
     if(gamesLogicList[gameName] === undefined) {
         gamesLogicList[gameName] = gameLogic.create(numPlayers, playersArr, gameName);
@@ -17,19 +16,11 @@ function initGame(req, res, next){
     next();
 }
 
-function getGameStatus(gameName, userName) {
+function getGameStatus(gameName) {
     if(gameAuth.gameAuthentication(gameName) === false){
         return null;
     } else {
         return gamesLogicList[gameName].GetGameState(gameName);
-    }
-}
-
-function getGameSummery(gameName) {
-    if(gamesAuth.gameAuthentication(gameName) === false){
-        return null;
-    } else {
-        return null; //gamesLogicList[gameName].getJSONgameSummery();
     }
 }
 
@@ -73,12 +64,5 @@ function executeADraw(req, res, next) {
     next();
 }
 
-function restartGameLogic(gamename) {
-    if(gamesLogicList[gamename] !== undefined){
-        gamesLogicList[gamename] = undefined;
-    }
-}
-
-
-module.exports = {executeADraw, isLegalDraw, isLegalMove, addBrick, getGameSummery, getGameStatus, initGame}
+module.exports = {executeADraw, isLegalDraw, isLegalMove, addBrick, getGameStatus, initGame}
 

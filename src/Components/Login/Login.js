@@ -40,23 +40,22 @@ class Login extends Component {
     }
 
     handleSuccessfulLogin() {
-        this.setState(()=>({showLogin:false}), this.getUserName);
+        this.setState(() => ({showLogin:false}), this.getUserName);
     }
 
     handleLoginError() {
-        console.error('login failed');
-        this.setState(()=>({showLogin:true}));
+        this.setState(() => ({showLogin:true}));
     }
 
     getUserName() {
         this.fetchUserInfo()
         .then(userInfo => {
-            this.setState(()=>({currentUser:userInfo, showLogin: false}));
+            this.setState(() => ({currentUser:userInfo, showLogin: false}));
         })
         .catch(err => {            
             //error 401 = UNAUTHORIZED
             if (err.status === 401) {
-                this.setState(()=>({showLogin: true}));
+                this.setState(() => ({showLogin: true}));
             } else {
                 throw err;
             }
@@ -66,7 +65,7 @@ class Login extends Component {
     fetchUserInfo() {        
         return fetch('/users',{method: 'GET', credentials: 'include'})
         .then(res => {            
-            if (!res.ok){
+            if (!res.ok) {
                 throw res;
             }
             return res.json();
@@ -77,9 +76,9 @@ class Login extends Component {
         fetch('/users/logout', {method: 'GET', credentials: 'include'})
         .then(res => {
             if (!res.ok) {
-                console.log(`failed to logout user ${this.state.currentUser.name} `, res);                
+                //console.log(`failed to logout user ${this.state.currentUser.name} `, res);                
             }
-            this.setState(()=>({currentUser: {name:''}, showLogin: true}));
+            this.setState(() => ({currentUser: {name:''}, showLogin: true}));
         })
     }
 }

@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import "./Login-Modal.css";
+import {invalidMessage} from "../Popup/MessagePopup";
 
 class LoginModal extends Component {
     constructor() {
@@ -58,12 +59,10 @@ class LoginModal extends Component {
         fetch('/users/addUser', {method:'POST', body: userName, credentials: 'include'})
         .then((res) => {            
             if (res.ok){
-                //this.setState(()=> ({errMessage: ""}));
                 this.props.loginSuccessHandler();
             } else {
                 if (res.status === 403) {
-                    //snackbarInvalid("User name already exist");
-                    //this.setState(()=> ({errMessage: "User name already exist, please try another one"}));
+                    invalidMessage("User name already exist");
                 }
                 this.props.loginErrorHandler();
             }

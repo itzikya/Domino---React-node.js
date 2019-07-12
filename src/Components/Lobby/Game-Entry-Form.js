@@ -8,10 +8,10 @@ class GameEntryForm extends Component {
     render() {
         return (
             <form className="create-game" onSubmit={this.props.newGameEntryHandler}>
-             <div>
-                 <h3 className="addGameTitle">Add Game</h3>
-                 <input className="addGameText" type="text" name="name" placeholder="Game Name"/>
-             </div>
+                <div>
+                    <h3 className="addGameTitle">Add Game</h3>
+                    <input className="addGameText" type="text" name="name" placeholder="Game Name"/>
+                </div>
                 <div>
                 <label className="input-w" htmlFor="playersNum">Participant: </label>
                 <select className="input-s" name="playersNum">
@@ -20,8 +20,6 @@ class GameEntryForm extends Component {
                 </select>
                 </div>
                 <div>
-                <input className="input-w" type="checkbox" id="isCompPlay" name="isCompPlay"></input>
-                <label htmlFor="checkbox" name="isCompPlay">Computer player</label>
                 </div>
                 <div>
                     <input

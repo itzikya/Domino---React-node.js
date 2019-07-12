@@ -1,21 +1,20 @@
 import React, {Component} from "react";
 import {statusMessage, invalidMessage} from "../Popup/MessagePopup";
 import "./Game-Container.css";
-import DominoLogo from "../../domino.png";
-//import DominoBox from "../../‏‏domino-box.JPG";
 import Board from "../Board/Board";
 import Deck from "../Deck/Deck";
+import ConversationArea from "../Chat/ConversationArea";
+import ChatInput from "../Chat/ChatInput";
+import DominoBrick from "../DominoBrick/DominoBrick";
 
 const notificationConst = {
     PRE_GAME_STATUS : 'preGameStatus',
     INVALID_MOVE : 'invalidMove',
-    NEW_COLOR : 'newColor'
 }
 
 const playerStatusConst = {
     WAITING: 'waiting',
     PLAYING: 'playing',
-    FINISHED_CARDS: 'finishedCards',
     SPECTATOR: 'spectator'
 };
 
@@ -24,33 +23,33 @@ class GameContainer extends Component{
         super(props);
         this.state = {
             players: [],
-            selectedBrick: { numbers: [],
-                             status: "" },
             isActive: false,
+            playerStatus: props.playerStatus,
             statusMessage: "",
             gameStatus: null,
-            gameSummery: null,
-            playerStatus: props.playerStatus,
+            selectedBrick: { numbers: [],
+                             status: "" }
         };
 
         this.getGameInfo = this.getGameInfo.bind(this);
         this.initGame = this.initGame.bind(this);
         this.getGameStatus = this.getGameStatus.bind(this);
-        //this.renderTablePackTop = this.renderTablePackTop.bind(this);
+        this.renderOpp1 = this.renderOpp1.bind(this);
+        this.renderOpp2 = this.renderOpp2.bind(this);
+        this.renderOpp3 = this.renderOpp3.bind(this);
         this.renderMyHand = this.renderMyHand.bind(this);
-        this.renderOpponentHand = this.renderOpponentHand.bind(this);
         this.renderStatistics = this.renderStatistics.bind(this);
         this.renderGame = this.renderGame.bind(this);
+        this.renderChat = this.renderChat.bind(this);
         this.renderGameBoard = this.renderGameBoard.bind(this);
-        this.renderForSpectator = this.renderForSpectator.bind(this);
         this.notificationManager = this.notificationManager.bind(this);
         this.renderEndGamePopUp = this.renderEndGamePopUp.bind(this);
-        this.getGameSummery = this.getGameSummery.bind(this);
 
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleMouseOver = this.handleMouseOver.bind(this);
         this.handleClickedBrick = this.handleClickedBrick.bind(this);
         this.handleDrawClick = this.handleDrawClick.bind(this);
+        this.selectedBrick = this.selectedBrick.bind(this);
     }
 
     componentWillMount(){
@@ -65,98 +64,68 @@ class GameContainer extends Component{
 
     render() {
         return (
-            <div className={"game-Container"}>
-                {<img className={"logo"} src={DominoLogo}></img>}
+            <div className="game-Container">
                 {this.state.playerStatus !== playerStatusConst.PLAYING ? 
-                <button className={"util btn"} 
-                        id={"leaveBtn"}
+                <button className="my-button" 
                         value={this.props.gameName} 
-                        onClick={() => this.props.leaveGameHandler(this.props.gameName)}></button> : null}
-                {this.state.isActive === true || this.state.gameSummery !== null ? this.renderGame() : null}
+                        onClick={() => this.props.leaveGameHandler(this.props.gameName)}>Leave Game</button> : null}
+                {this.state.isActive === true ? this.renderGame() : null}
+                {this.renderEndGamePopUp()}
             </div>
         )
     }
 
 //----------------------------------------------------RENDERERS---------------------------------------------------------
 
-    renderGame(){
-        return(
-            <div className={"gameBoard-container"}>
-                {/*this.renderStatistics()*/}
-                {/*this.renderSpectatorList()*/}
-                <div className={"theGame"}>
-                    {/*this.renderChooseColorButton()*/}
-                    {this.renderGameBoard()}
-                    {this.renderTheDeck()}
-                    {
-                    <div className={"playersContainer"}>
-                        {this.state.playerStatus !== playerStatusConst.SPECTATOR ? this.renderMyHand() : null}
-                        {this.state.playerStatus !== playerStatusConst.SPECTATOR ? this.state.players.map(this.renderOpponentHand) : null }
-                        {/*this.state.playerStatus === playerStatusConst.SPECTATOR ? this.state.players.map(this.renderForSpectator) : null */}
-                    </div>}
-            </div>
-                {this.renderEndGamePopUp()}
+    renderGame() {
+        return (
+            <div className="gameBoard-container">
+                {this.renderChat()}
+                <div className="the-game">
+                    {this.renderOpp1()}
+                    <div className="center-bar">
+                        {this.renderGameBoard()}
+                        {this.state.players.length === 3 ? this.renderOpp2() : null }
+                    </div>
+                    <div className="my-panel">
+                        {this.renderTheDeck()}
+                        {this.state.playerStatus !== playerStatusConst.SPECTATOR ? this.renderMyHand() : this.renderOpp3() }
+                    </div>
+                </div>
+                <div className="right-panel">
+                    {this.renderStatistics()}
+                    {this.renderSpectatorList()}
+                </div>
             </div>
         )
     }
 
     renderTheDeck() {
         return (
-            <div className="draw-buttons">
-                <div className="draw">
-                    {this.state.isPileEmpty ? <p>No more bricks!</p> : null}
-                    <button className="my-button" 
-                            onClick={this.handleDrawClick}
-                            status={this.state.isLeftMoves}>Draw
-                    </button>
-                </div>
-                <div>
-                    <button className="my-button" 
-                            onClick = {this.handleUndoClick}>Undo
-                    </button>
-                </div>
+            <div className="draw">
+                <button className="my-button" 
+                    onClick={this.handleDrawClick}
+                    status={this.state.isLeftMoves}>Draw
+                </button>
             </div>
         )
     }
 
     renderGameBoard() {
-        const myBoard = <Board 
-                        //isTimerStarted={this.state.isTimerStarted}
-                        myBoard={this.state.gameStatus.board}
-                        //status2={this.state.isGameEnded}
-                        //handleDrop={this.handleDrop}
-                        />
+        const myBoard = <Board myBoard={this.state.gameStatus.board}/>
+
         return (
             <div className="domino-game">
-                    <div className="body">
-                        <div className="board-container">
-                            {myBoard}
-                        </div>
-                        <div className="right-nav">
-                            {/*<GameTimer isTimerStarted={this.state.isTimerStarted} />*/}
-                            {/*<Control func={this.handleGame}/>*/}
-                            {/*<div className="draw">
-                                {this.state.isPileEmpty ? <p>No more bricks!</p> : null}
-                                <button className="my-button" 
-                                    onClick={this.handleDrawClick}
-                                    status={this.state.isLeftMoves}>Draw</button>
-                            </div>
-                            <div>
-                                <button className="my-button" onClick = {this.handleUndoClick}>Undo</button>
-                            </div>*/}
-                            {/* myDeck */}
-                            <br></br>
-                            {/*this.state.isGameStarted ? myDeck2 : null*/}
-                        </div>
-                    </div>
-                    {this.state.isCheckEndGame ? this.checkEndGame() : null}
-                    {this.state.isGameEnded ? myPopup : null}
+                <div className="board-container">
+                    {myBoard}
                 </div>
+            </div>
         )
     }
 
     renderMyHand() {
-        const playerIndex = this.state.players.indexOf(this.props.userName);
+        const playerName = this.props.userName;
+        const playerIndex = this.state.players.indexOf(playerName);
         const playerHand = this.state.gameStatus.players[playerIndex].Hand;
         const myHand = <Deck 
                         handleClickedBrick={this.handleClickedBrick} 
@@ -166,46 +135,181 @@ class GameContainer extends Component{
                         selectedBrick={this.state.selectedBrick}
                         />
         return (
-            <div className="right-nav">
+            <div className="my-hand-container">
+                <div className="userName">{playerName}</div>
                 {myHand}
             </div>
         )
     }
 
+    renderOpp1() {
+        if(this.state.playerStatus !== playerStatusConst.SPECTATOR) {
+            const index = (Math.abs(this.state.players.indexOf(this.props.userName) - 1)) % this.state.players.length;
+            const playersHand = this.state.gameStatus.players[index].Hand;
+            const playerName = this.state.players[index];
+            const opponentDisplay = playersHand.map((brick, index) =>
+                <div className="opponent-brick" key={brick}></div>)
+            
+            return (
+                <div className="opponent-1">
+                    <div className="opponent-panel1">
+                        {opponentDisplay}
+                    </div>
+                    <div className="userName">{playerName}</div>
+                </div>
+            )
+        }
+        else {
+            const playerName = this.state.gameStatus.players[1].id;
+            const pickedUpBricks = this.state.gameStatus.players[1].Hand.map(brick => <DominoBrick 
+                handleClickedBrick={this.handleClickedBrick}
+                handleMouseOver={this.handleMouseOver}
+                handleMouseOut={this.handleMouseOut}
+                handleDrop={this.handleDrop}
+                numbers={brick}
+                isDeckBrick={true}
+                status={this.selectedBrick(brick)}
+                key={`brick${brick[0]}${brick[1]}`} 
+                />)
+            
+            return (
+                <div className="opponent-1">
+                    <div className="deck opponent-panel1">
+                        {pickedUpBricks}
+                    </div>
+                    <div className="userName">{playerName}</div>
+                </div>
+            )
+        }  
+    } 
+
+    renderOpp2() {
+        if(this.state.playerStatus !== playerStatusConst.SPECTATOR) {
+            let index;
+
+            if(this.state.players.indexOf(this.props.userName) === 1) {
+                index = 2;
+            }
+            else {
+                index = (Math.abs(this.state.players.indexOf(this.props.userName) - 2)) % this.state.players.length;
+            }
+
+            const playersHand = this.state.gameStatus.players[index].Hand;
+            const playerName = this.state.players[index];
+            const opponentDisplay = playersHand.map((brick, index) =>
+                <div className="opponent-brick" key={brick}></div>)
+            return (
+                <div className="opponent-2">
+                    {opponentDisplay}
+                    <div className="userName">{playerName}</div>
+                </div>
+            )
+        }
+        else {
+            const playerName = this.state.gameStatus.players[2].id;
+            const pickedUpBricks = this.state.gameStatus.players[2].Hand.map(brick => <DominoBrick 
+            handleClickedBrick={this.handleClickedBrick}
+            handleMouseOver={this.handleMouseOver}
+            handleMouseOut={this.handleMouseOut}
+            handleDrop={this.handleDrop}
+            numbers={brick}
+            isDeckBrick={true}
+            status={this.selectedBrick(brick)}
+            key={`brick${brick[0]}${brick[1]}`} 
+            />)
+            
+            return (
+                <div className="deck2 opponent-2">
+                    {pickedUpBricks}
+                    <div className="userName">{playerName}</div>
+                </div>
+            )
+        } 
+    }
+
+    renderOpp3() {
+        const playerName = this.state.gameStatus.players[0].id;
+        const pickedUpBricks = this.state.gameStatus.players[0].Hand.map(brick => <DominoBrick 
+        handleClickedBrick={this.handleClickedBrick}
+        handleMouseOver={this.handleMouseOver}
+        handleMouseOut={this.handleMouseOut}
+        handleDrop={this.handleDrop}
+        numbers={brick}
+        isDeckBrick={true}
+        status={this.selectedBrick(brick)}
+        key={`brick${brick[0]}${brick[1]}`} 
+        />)
+        
+        return (
+            <div className="opponent-1 my-hand">
+                <div className="userName">{playerName}</div>
+                <div className="opponent-panel1 deck">
+                    {pickedUpBricks}
+                </div>
+            </div>
+        )    
+    } 
+
+    renderChat() {
+        return (
+            <div className="chat-base-container">
+                <div className="user-info-area">
+                    Hello {this.props.userName}
+                </div>
+                <div className="chat-container">
+                    <ConversationArea />
+                    <ChatInput />
+                </div>
+            </div>
+        )
+    }
+/*
     renderOpponentHand(playerName, index) {
         if (playerName !== this.props.userName) {
             const playersHand = this.state.gameStatus.players[index].Hand;
-            const opponentContainer = this.calcPlayerContainerName(playerName);
+            
+            //const opponentContainer = this.calcPlayerContainerName(playerName);
             const opponentDisplay = playersHand.map((brick, index) =>
-                <img /*src="https://thumbs.dreamstime.com/z/domino-box-game-13132675.jpg"*/ className={"opponent-brick"} key={brick}/>);
-            return (<div className={opponentContainer}>{opponentDisplay}
-                        <div className={"userName"}>{playerName}
-                        </div>
-                    </div>)
+                <div className="opponent-brick" key={brick}></div>)
+            return (
+                <div className={opponentContainer}>
+                    {opponentDisplay}
+                    <div className="userName">{playerName}</div>
+                </div>
+            )
         }
         return null;
     }
-
+*/
     renderStatistics() {
+        const playerName = this.props.userName;
+        const playerIndex = this.state.players.indexOf(playerName);
+
         return (
-            <div id="statistics-Container">
-                <p>Game length: {this.state.gameStatus.currentTimer}</p>
-                <p>Current Player: {this.state.gameStatus.currentPlayer}</p>
-                {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Average turn time: {this.state.gameStatus.avgTime}</p> : null}
-                {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Last card: {this.state.gameStatus.lastCard}</p> : null}
+            <div className="statistics">
+                <div id="statistics-container">
+                    <p>Game length: {/*this.state.gameStatus.currentTimer*/}</p>
+                    <p>Current Player: <b>{this.state.gameStatus.playerTurn}</b></p>
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Average turn time: {this.state.gameStatus.listOfPlayers[playerIndex].avgTimeOfTurnSeconds}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of draws: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTileDraws}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of turns: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTurns}</p> : null}
+                </div>
             </div> )
     }
 
 
     renderSpectatorList() {
         return(
-            <div id = "spectatorList-container">
-                <h3>spectators:</h3>
-                {this.state.gameStatus.spectators.map((user,index) => <div className={"spectator"} key={index}>{user}</div>)}
+            <div className="statistics">
+                <div id="statistics-container">
+                    <h3>spectators:</h3>
+                    {this.state.gameStatus.spectators.map((user,index) => <div className={"spectator"} key={index}>{user}</div>)}
+                </div>
             </div>
         )
     }
 
+    /*
     renderForSpectator(playerName,index) {
         const playersHand = this.state.gameStatus.playersCards[index];
         const cardsContainer = this.calcPlayerContainerName(playerName);
@@ -215,21 +319,25 @@ class GameContainer extends Component{
         });
         return (<div className={cardsContainer}>{cardsDisplay}<div className={"userName"}>{playerName}</div></div>)
     }
-
-
+    */
+    
     renderEndGamePopUp() {
-        if(this.state.gameStatus && this.state.isActive === false){
+        if(this.state.gameStatus && this.state.isActive === false) {
+            const playerName = this.props.userName;
+            const playerIndex = this.state.players.indexOf(playerName);
+
             return (
                 <div className = 'animate'>
-                    <div className = 'popupContainer endGame'>
-                        <h1>Game Summery</h1>
+                    <div className = 'popup-container endGame'>
+                        <h1>Game Summary</h1>
                         <h2>Players Rank</h2>
-                        <p>Winner: {this.state.gameSummery.playersRank[0]}</p>
-                        {this.state.gameSummery.playersRank.map((player,index)=>(index !== 0 ? <p key={index+1}>{index+1}: {player}</p> : null))}
+                        <p>Winner: {this.state.gameStatus.winnerList[0].rank !== "-1" ? this.state.gameStatus.winnerList[0].id : "Draw!"}</p>
+                        {this.state.gameStatus.winnerList[0].rank !== "-1" ? this.state.gameStatus.winnerList.map((player,index) => (index !== 0 ? <p key={index+1}>{index+1}: {player}</p> : null)) : null}
                         <h2>Statistics</h2>
-                        <p>Length: {this.state.gameSummery.totalTime}</p>
-                        <p>Turns: {this.state.gameSummery.totalTurns}</p>
-                        {this.state.players.map((player,i)=><p>{player} : last card = {this.state.gameSummery.playersLastCard[i]}, avg time = {this.state.gameSummery.playersAvgTime[i]}</p>)}
+                        <p>Length: {this.state.gameStatus.listOfPlayers[playerIndex].timeFromStartSeconds}</p>
+                        <p>Turns: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTurns}</p>
+                        <p>Average: {this.state.gameStatus.listOfPlayers[playerIndex].avgTimeOfTurnSeconds}</p>
+                        <p>Draws: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTileDraws}</p>
                     </div>
                 </div>)
         } else {
@@ -253,10 +361,8 @@ class GameContainer extends Component{
                 .then(response => {
                     if (!response.ok) {
                         this.notificationManager("Invalid Move!", notificationConst.INVALID_MOVE);
-                        console.log(">>>>>>>>> Error: " + response);
                         throw response;
                     }
-                    console.log(">>>>>>>> OK! " + response);
                     fetch("/games/addBrick", {
                         method: "POST",
                         body: JSON.stringify({gameName: this.props.gameName,
@@ -265,15 +371,15 @@ class GameContainer extends Component{
                         credentials: "include"
                     })
                     .then(response => {
-                        console.log("after addBrick: ", response)})
+                        //console.log("after addBrick: ", response)
+                    })
                 })
             }
             else {
                 if(this.state.playerStatus === playerStatusConst.SPECTATOR) {
                     this.notificationManager("You're just a spectator", notificationConst.INVALID_MOVE);
-                }/* else if(this.state.playerStatus === playerStatusConst.FINISHED_CARDS) {
-                    this.notificationManager("you already finished your cards man",notificationConst.INVALID_MOVE);
-                }*/ else {
+                }
+                else {
                     this.notificationManager("It's not your turn", notificationConst.INVALID_MOVE);
                 }
             }
@@ -282,7 +388,7 @@ class GameContainer extends Component{
     }
 
     handleMouseOver(brick) {
-        if(this.state.isActive === true) {
+        if(this.state.isActive === true && this.state.playerStatus !== playerStatusConst.SPECTATOR) {
             if(this.state.gameStatus.playerTurn === this.props.userName) {
                 fetch("/games/isLegalMove", {
                     method: "POST",
@@ -292,7 +398,6 @@ class GameContainer extends Component{
                 })
                 .then(response => {
                     if (!response.ok) {
-                        console.log(response);
                         this.setState(() => {
                             return {selectedBrick: {numbers: brick,
                                                     status: "invalid"}
@@ -315,6 +420,9 @@ class GameContainer extends Component{
                     }
                 })
             }
+        }
+        else {
+            return;
         }
     }
        
@@ -357,12 +465,20 @@ class GameContainer extends Component{
             else {
                 if(this.state.playerStatus === playerStatusConst.SPECTATOR) {
                     this.notificationManager("You're just a spectator", notificationConst.INVALID_MOVE);
-                }/* else if(this.state.playerStatus === playerStatusConst.FINISHED_CARDS) {
-                    this.notificationManager("you already finished your cards man",notificationConst.INVALID_MOVE);
-                }*/ else {
+                }
+                else {
                     this.notificationManager("It's not your turn", notificationConst.INVALID_MOVE);
                 }
             }
+        }
+    }
+
+    selectedBrick(brick) {
+        if(brick === this.state.selectedBrick.numbers) {
+            return (this.state.selectedBrick.status);
+        }
+        else {
+            return "neutral";
         }
     }
 
@@ -376,7 +492,6 @@ class GameContainer extends Component{
         })
         .then(response => {
             if (!response.ok) {
-                console.log(response);
                 throw response;
             }
             return response.json();
@@ -463,7 +578,7 @@ class GameContainer extends Component{
                 }
 */
                 this.setState(() => ({
-                    isActive: updatedGameStatus.isActive,
+                    isActive: !updatedGameStatus.gameEnded,
                     gameStatus: updatedGameStatus,
                     playerStatus: updatedPlayerStatus
                 }));
@@ -472,30 +587,7 @@ class GameContainer extends Component{
                 throw err
             });
     }
-    getGameSummery() {
-        console.log("in get gameSummery");
-        fetch("/games/gameSummery", {
-            method: "POST",
-            body: JSON.stringify({gameName: this.props.gameName}),
-            credentials: "include"
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw response;
-                }
-                return response.json();
-            })
-            .then(gameSummery => {
-                this.setState(() => ({
-                    isActive: false,
-                    gameSummery: gameSummery
-                }));
-            })
-            .catch(err => {
-                throw err
-            });
-    }
-
+    
 //----------------------------------------------------UTILITIES---------------------------------------------------------
 
     createStatusMessage(gameInfo) {
