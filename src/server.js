@@ -5,6 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const userManagement = require('./Routes/userManagement');
 const gameManagement = require('./Routes/gameManagement');
+const chatManagement = require('./Routes/chatManagement');
 const auth = require('./Routes/usersAuth');
 
 app.get('/', (req, res, next) => {
@@ -20,6 +21,7 @@ app.use(express.static(path.join(__dirname, "..","public")));
 
 app.use('/users', userManagement);
 app.use('/games', gameManagement);
+app.use('/chat', chatManagement);
 
 app.listen(3000, console.log("Connected to port 3000!"));
 

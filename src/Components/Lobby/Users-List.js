@@ -44,7 +44,7 @@ class UsersList extends Component {
                 return response.json();
             })
             .then(content => {
-                let updatedList = [];//this.state.userList;
+                let updatedList = [];
                 for (let sessionID in content) {
                     updatedList.push(content[sessionID]);
                 }

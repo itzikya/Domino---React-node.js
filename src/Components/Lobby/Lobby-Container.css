@@ -15,6 +15,7 @@
     border: 3px solid black;
 }*/
 
+
 @media only screen and (min-width:1400px) and (min-height:1200px) {
 
     body {
@@ -97,13 +98,12 @@
         margin-top: 30px;
         z-index: auto;
         /* border sizing*/
-
     }
 
     .user-info-area {
         /* div of logged in user */
         font-weight: bold;
-        font-size: 25px;
+        font-size: 26px;
         font-family: 'Helvetica Neue', sans-serif;
         letter-spacing: 2px;
         line-height: 1;
@@ -132,10 +132,10 @@
         background-color: whitesmoke;
         border: 2px solid ghostwhite;
         border-radius: 15px;
-        width: 270px;
+        /*width: 270px;
         height: 180px;
+        margin-top: -8px;*/
         margin: 2rem auto;
-        margin-top: -8px;
         padding: 2rem;
         z-index: auto;
         animation-name: enterContainer;
@@ -170,13 +170,13 @@
         width: auto;
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;
     }
 
     .input-w {
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     input {
@@ -220,9 +220,14 @@
     .addGameText {
         height: 25px;
     }
-
+    
     .addGameTitle {
         margin-top: -2px;
+        font-weight: bold;
+    }
+
+    .userListTitle {
+        font-weight: bold;
     }
 
     .activeGamesTitle {
@@ -373,7 +378,7 @@
     .user-info-area {
         /* div of logged in user */
         font-weight: bold;
-        font-size: 25px;
+        font-size: 26px;
         font-family: 'Helvetica Neue', sans-serif;
         letter-spacing: 2px;
         line-height: 1;
@@ -401,10 +406,10 @@
         background-color: whitesmoke;
         border: 2px solid ghostwhite;
         border-radius: 15px;
-        width: 270px;
+        /*width: 270px;
         height: 180px;
+        margin-top: -8px;*/
         margin: 2rem auto;
-        margin-top: -8px;
         padding: 2rem;
         z-index: auto;
         animation-name: enterContainer;
@@ -439,13 +444,13 @@
         width: auto;
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     .input-w {
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     input {
@@ -493,6 +498,11 @@
 
     .addGameTitle {
         margin-top: -2px;
+        font-weight: bold;
+    }
+
+    .userListTitle {
+        font-weight: bold;
     }
 
     .activeGamesTitle {
@@ -646,7 +656,7 @@
     .user-info-area {
         /* div of logged in user */
         font-weight: bold;
-        font-size: 25px;
+        font-size: 26px;
         font-family: 'Helvetica Neue', sans-serif;
         letter-spacing: 2px;
         line-height: 1;
@@ -674,10 +684,10 @@
         background-color: whitesmoke;
         border: 2px solid ghostwhite;
         border-radius: 15px;
-        width: 270px;
+        /*width: 270px;
         height: 180px;
+        margin-top: -8px;*/
         margin: 2rem auto;
-        margin-top: -8px;
         padding: 2rem;
         z-index: auto;
         animation-name: enterContainer;
@@ -712,13 +722,13 @@
         width: auto;
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     .input-w {
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     input {
@@ -765,6 +775,11 @@
 
     .addGameTitle {
         margin-top: -2px;
+        font-weight: bold;
+    }
+
+    .userListTitle {
+        font-weight: bold;
     }
 
     .activeGamesTitle {
@@ -918,7 +933,7 @@
         /* div of logged in user */
         /*position: absolute;*/
         font-weight: bold;
-        font-size: 25px;
+        font-size: 26px;
         font-family: 'Helvetica Neue', sans-serif;
         letter-spacing: 2px;
         line-height: 1;
@@ -945,10 +960,10 @@
         background-color: whitesmoke;
         border: 2px solid ghostwhite;
         border-radius: 15px;
-        width: 270px;
+        /*width: 270px;
         height: 180px;
+        margin-top: -8px;*/
         margin: 2rem auto;
-        margin-top: -8px;
         padding: 2rem;
         z-index: auto;
         animation-name: enterContainer;
@@ -983,13 +998,13 @@
         width: auto;
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     .input-w {
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     input {
@@ -1036,6 +1051,11 @@
 
     .addGameTitle {
         margin-top: -2px;
+        font-weight: bold;
+    }
+
+    .userListTitle {
+        font-weight: bold;
     }
 
     .activeGamesTitle {
@@ -1191,7 +1211,7 @@
     .user-info-area {
         /* div of logged in user */
         font-weight: bold;
-        font-size: 25px;
+        font-size: 26px;
         font-family: 'Helvetica Neue', sans-serif;
         letter-spacing: 2px;
         line-height: 1;
@@ -1221,10 +1241,10 @@
         background-color: whitesmoke;
         border: 2px solid ghostwhite;
         border-radius: 15px;
-        width: 270px;
+        /*width: 270px;
         height: 180px;
+        margin-top: -8px;*/
         margin: 2rem auto;
-        margin-top: -8px;
         padding: 2rem;
         z-index: auto;
         animation-name: enterContainer;
@@ -1259,13 +1279,13 @@
         width: auto;
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     .input-w {
         float: none;
         display: inline-block;
-        vertical-align: middle;
+        /*vertical-align: middle;*/
     }
 
     input {
@@ -1312,6 +1332,11 @@
 
     .addGameTitle {
         margin-top: -2px;
+        font-weight: bold;
+    }
+
+    .userListTitle {
+        font-weight: bold;
     }
 
     .activeGamesTitle {

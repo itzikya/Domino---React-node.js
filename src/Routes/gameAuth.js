@@ -32,6 +32,7 @@ function addSpectatorToGame(req, res, next) {
         //error 409 = CONFLICT
         res.status(409).send("Game name does not exist!");
     } else {
+        console.log("in add spectator:", userName);
         gamesList[gameName].spectators.push(userName);
         next();
     }
@@ -42,15 +43,13 @@ function leaveGame(req, res, next) {
     const userName = usersAuth.getUserNameBySessionId(req.session.id);
     const gameName = gameFromReq.gameName;
     if(gamesList[gameName]){
-        if(gamesList[gameName].players.includes(userName))
-        {
+        if(gamesList[gameName].players.includes(userName)) {
             if(gamesList[gameName].isActive === false){
                 const userIndex = gamesList[gameName].players.findIndex((user) => {return user === userName});
                 gamesList[gameName].players.splice(userIndex,1);
             }
         }
-        if(gamesList[gameName].spectators.includes(username))
-        {
+        if(gamesList[gameName].spectators.includes(userName)) {
             const userIndex = gamesList[gameName].spectators.findIndex((user) => {return user === userName});
             gamesList[gameName].spectators.splice(userIndex,1);
         }
@@ -60,7 +59,6 @@ function leaveGame(req, res, next) {
 
 function addGameToAuthList(req, res, next) { 
     const gameFromReq = JSON.parse(req.body);
-    const isCompPlay = gameFromReq.isCompPlay;
     const playersNum = parseInt(gameFromReq.playersNum);
 
     if(gameAuthentication(gameFromReq.gameName) === true) {
@@ -71,7 +69,6 @@ function addGameToAuthList(req, res, next) {
             name: gameFromReq.gameName,
             creator: usersAuth.getUserNameBySessionId(req.session.id),
             playersNum: playersNum,
-            isCompPlay: isCompPlay,
             isActive: false,
             players: [],
             spectators: []
@@ -99,15 +96,6 @@ function removeGameFromAuthList(req, res, next) {
 }
 
 //MIDDLEWARE UTILS
-function restartGameEntry(gameName) {
-    if(gamesList[gameName]){
-        if(gamesList[gameName].isActive === true){
-            gamesList[gameName].isActive = false;
-            gamesList[gameName].players = [];
-            gamesList[gameName].spectators = [];
-        }
-    }
-}
 
 function getSpectators(gameName) {
     if(gamesList){
@@ -127,16 +115,9 @@ function gameAuthentication(gameName) { return gamesList[gameName] !== undefined
 function getGamesList() { return gamesList; }
 
 function updateIfGameReady(gameEntry) {
-    if (gameEntry.isCompPlay === true) {
-        if (gameEntry.players.length === gameEntry.playersNum - 1) {
-            gameEntry.players.push("compy");
-            gameEntry.isActive = true;
-        }
-    } else {
         if (gameEntry.players.length === gameEntry.playersNum) {
             gameEntry.isActive = true;
         }
-    }
 }
 
-module.exports = {removeGameByName, addSpectatorToGame, getSpectators, restartGameEntry, gameAuthentication, getGameInfo, leaveGame, getGamesList, addGameToAuthList, removeGameFromAuthList, addUserToGame}
+module.exports = {removeGameByName, addSpectatorToGame, getSpectators, gameAuthentication, getGameInfo, leaveGame, getGamesList, addGameToAuthList, removeGameFromAuthList, addUserToGame}

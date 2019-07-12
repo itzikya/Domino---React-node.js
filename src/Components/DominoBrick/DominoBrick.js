@@ -38,18 +38,6 @@ class DominoBrick extends Component {
         }
     }
 
-    /*
-    handleDragStart(e, id) {
-        if(this.props.isDeckBrick) {
-            console.log("drag start: ", id);
-            e.dataTransfer.setData("id", id);
-        }
-        else {
-            return null;
-        }
-    }
-    */
-
     render() {
         const key = [`${this.props.numbers[0]}`, `${this.props.numbers[1]}`];
         
@@ -62,8 +50,6 @@ class DominoBrick extends Component {
                 onMouseOut={this.handleMouseOut}
                 onClick={this.handleClickedBrick} 
                 className={`${this.props.numbers[0]}${this.props.numbers[1]} domino-brick`}
-                //onDragStart={(e) => this.handleDragStart(e, this.props.numbers)}
-                //draggable
                 >
                 <HalfBrick className={`brickT${this.props.numbers[0]} top`} 
                             position="top" 

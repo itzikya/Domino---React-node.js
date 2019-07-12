@@ -24,7 +24,6 @@ class GamesArea extends Component {
     render() {
         return(
             <div className="games-area-wrapper">
-                <div className="games-area-title">Games</div>
                 {this.state.gamesList.map((game, index) => (
                                                         <div className="gameFrame" key={index}>
                                                             {this.renderGameEntry(game,index)}
@@ -37,7 +36,7 @@ class GamesArea extends Component {
         const gameName = game.name;
         const gameCreator = game.creator;
         const gameStatus = game.isActive ? "Active" : "Pending";
-        const isUserAuthorizedToRemove = game.players.length === 0 && this.props.username === game.creator;
+        const isUserAuthorizedToRemove = game.players.length === 0 && this.props.userName === game.creator;
 
         return(
             <div id={gameName} className="gameEntry" key={index}>
