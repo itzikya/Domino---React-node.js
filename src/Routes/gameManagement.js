@@ -39,16 +39,13 @@ gameManagement.post("/gameStatus", (req,res) => {
     const gameName = JSON.parse(req.body).gameName;
     const userName = JSON.parse(req.body).userName;
     const gameStatus = gamesLogicAuth.getGameStatus(gameName, userName);
-    if(gameStatus){
+    if(gameStatus)
+    {
         gameStatus.spectators = gamesAuth.getSpectators(gameName);
     }
-    //let data = JSON.stringify(gameStatus);
-    //res.data = gameStatus;
  
-
     res.json(gameStatus);
 });
-
 
 gameManagement.post("/isLegalMove", gamesLogicAuth.isLegalMove, (req,res) => {
     res.sendStatus(200);
@@ -71,7 +68,19 @@ gameManagement.get("/allGames", (req, res) => {
     let theGames = gamesAuth.getGamesList();
     for(gameName in theGames) {
         let game = theGames[gameName];
-        if(game) {
+        if(game !== undefined && game.isActive)
+        {
+            if(gamesLogicAuth.getGameStatus(gameName).gameEnded === true)
+            {
+                gamesLogicAuth.gamesLogicList[gameName] = undefined;
+                game.players = [];
+                game.isActive = false;
+                game.spectators = [];
+            }
+        }
+
+        if(game) 
+        {
             if(userAuth.isUserExist(game.creator) === false && game.players.length === 0 && game.spectators.length === 0) {
                 gamesAuth.removeGameByName(gameName);
                 theGames = gamesAuth.getGamesList();

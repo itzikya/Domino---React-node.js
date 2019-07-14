@@ -132,8 +132,8 @@ class Player {
         this.Stats = new Statistics();
         this.UpdateStats = this.UpdateStats.bind(this);
         this.GetClientStats = this.GetClientStats.bind(this);
-        this.HandWight = 0;
-        this.UpdateHandWight = this.UpdateHandWight.bind(this);
+        this.HandWeight = 0;
+        this.UpdateHandWeight = this.UpdateHandWeight.bind(this);
         this.playerRank = -1;
     }
 
@@ -142,7 +142,9 @@ class Player {
     }
 
     GetClientStats() {
+        this.UpdateHandWeight()
         return {
+            HandWeight: this.HandWeight,
             id: this.id,
             Hand:this.Hand,
             numOfTurns: this.Stats.numOfTurns,                           // 9.1
@@ -154,10 +156,10 @@ class Player {
         };
     }
 
-    UpdateHandWight() {
-        this.HandWight = 0;
+    UpdateHandWeight() {
+        this.HandWeight = 0;
         for(let i = 0; i<this.Hand.length; i++) {
-            this.HandWight += this.Hand[i][0] + this.Hand[i][1];
+            this.HandWeight += this.Hand[i][0] + this.Hand[i][1];
         }
     }
 }
@@ -178,6 +180,8 @@ class Game {
         this.isActive = true;
         this.WinnerList = [];
         this.numOfPlayersLeft = i_NumOfPlayers;
+        this.gameTimer = new StatsTimer();
+        this.gameTimer.StartTimer();
 
         // Private Methods
         this._initDeckAndHands = this._initDeckAndHands.bind(this);
@@ -203,22 +207,23 @@ class Game {
     _checkWinner()
     {
         let winnerIndex = 0;
-        let winnerScore = 0;
+        let winnerScore = 99999;
         if(!this.isGameEnded) {
             return false;
         }
         else {
             for(let i = 0; i < this.numOfPlayers; i++) {
                 if(this.Players[i].playerRank === -1) {
-                    this.Players[i].UpdateHandWight();
-                    if(this.Players[i].HandWight > winnerScore) {
+                    this.Players[i].UpdateHandWeight();
+                    if(this.Players[i].HandWeight < winnerScore) {
                         winnerIndex = i;
-                        winnerScore = this.Players[i].HandWight;
+                        winnerScore = this.Players[i].HandWeight;
                     }
                 }
             }   
         }
 
+        this.gameTimer.StopTimer();
         this.Players[winnerIndex].playerRank = this.WinnerList.length + 1;
         this.WinnerList.push(this.Players[winnerIndex]);
         return true;
@@ -838,9 +843,11 @@ class Game {
     GetGameState(i_ID) {
         let listOfPlayers = [];
         let playersToSend = [];
-        for(let i = 0; i < this.numOfPlayers; i++) {
+        for(let i = 0; i < this.numOfPlayers; i++) 
+        {
             let id = this.Players[i].id;
-            if(i_ID === id) {
+            if(i_ID === id) 
+            {
                 playerStats = this.Players[i].Stats;
             }
 
@@ -861,6 +868,7 @@ class Game {
             winnerList: this.WinnerList,
             numOfPlayersLeft: this.numOfPlayersLeft,
             isActive: true,
+            timeInSeconds: this.gameTimer.totalSeconds,
         }
     }
 }

@@ -288,11 +288,12 @@ class GameContainer extends Component{
         return (
             <div className="statistics">
                 <div id="statistics-container">
-                    <p>Game length: {/*this.state.gameStatus.currentTimer*/}</p>
+                    <p>Game length: {this.state.gameStatus.timeInSeconds}</p>
                     <p>Current Player: <b>{this.state.gameStatus.playerTurn}</b></p>
-                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Average turn time: {this.state.gameStatus.listOfPlayers[playerIndex].avgTimeOfTurnSeconds}</p> : null}
-                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of draws: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTileDraws}</p> : null}
-                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of turns: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTurns}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Average turn time: {this.state.gameStatus.players[playerIndex].avgTimeOfTurnSeconds}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of draws: {this.state.gameStatus.players[playerIndex].numOfTileDraws}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Hand Weight: {this.state.gameStatus.players[playerIndex].HandWeight}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of turns: {this.state.gameStatus.players[playerIndex].numOfTurns}</p> : null}
                 </div>
             </div> )
     }
@@ -325,7 +326,7 @@ class GameContainer extends Component{
         if(this.state.gameStatus && this.state.isActive === false) {
             const playerName = this.props.userName;
             const playerIndex = this.state.players.indexOf(playerName);
-
+           
             return (
                 <div className = 'animate'>
                     <div className = 'popup-container endGame'>
@@ -334,10 +335,10 @@ class GameContainer extends Component{
                         <p>Winner: {this.state.gameStatus.winnerList[0].rank !== "-1" ? this.state.gameStatus.winnerList[0].id : "Draw!"}</p>
                         {this.state.gameStatus.winnerList[0].rank !== "-1" ? this.state.gameStatus.winnerList.map((player,index) => (index !== 0 ? <p key={index+1}>{index+1}: {player}</p> : null)) : null}
                         <h2>Statistics</h2>
-                        <p>Length: {this.state.gameStatus.listOfPlayers[playerIndex].timeFromStartSeconds}</p>
-                        <p>Turns: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTurns}</p>
-                        <p>Average: {this.state.gameStatus.listOfPlayers[playerIndex].avgTimeOfTurnSeconds}</p>
-                        <p>Draws: {this.state.gameStatus.listOfPlayers[playerIndex].numOfTileDraws}</p>
+                        <p>Length: {this.state.gameStatus.players[playerIndex].timeFromStartSeconds}</p>
+                        <p>Turns: {this.state.gameStatus.players[playerIndex].numOfTurns}</p>
+                        <p>Average: {this.state.gameStatus.players[playerIndex].avgTimeOfTurnSeconds}</p>
+                        <p>Draws: {this.state.gameStatus.players[playerIndex].numOfTileDraws}</p>
                     </div>
                 </div>)
         } else {
@@ -577,6 +578,7 @@ class GameContainer extends Component{
                     this.getGameSummery();
                 }
 */
+              
                 this.setState(() => ({
                     isActive: !updatedGameStatus.gameEnded,
                     gameStatus: updatedGameStatus,

@@ -64,7 +64,13 @@ function addGameToAuthList(req, res, next) {
     if(gameAuthentication(gameFromReq.gameName) === true) {
         //error 409 = CONFLICT
         res.status(409).send("Game name already exist");
-    } else {
+    }
+    else if(gameFromReq.gameName ==="")
+    {
+        res.status(409).send("Error: Room Name is Empty");
+    }
+    else 
+    {
         gamesList[gameFromReq.gameName] = {
             name: gameFromReq.gameName,
             creator: usersAuth.getUserNameBySessionId(req.session.id),

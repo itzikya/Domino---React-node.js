@@ -4,22 +4,28 @@ const gameLogic = require('../Logic/Game/Game');
 const gamesLogicList = {};
 
 //MIDDLEWARE FUNCS
-function initGame(req, res, next) {
+function initGame(req, res, next) 
+{
     const newGameReq = JSON.parse(req.body);
     const gameName = newGameReq.gameName;
     const playersArr = newGameReq.players;
     const numPlayers = playersArr.length;
 
-    if(gamesLogicList[gameName] === undefined) {
+    if(gamesLogicList[gameName] === undefined) 
+    {
         gamesLogicList[gameName] = gameLogic.create(numPlayers, playersArr, gameName);
     }
+
     next();
 }
 
-function getGameStatus(gameName) {
+function getGameStatus(gameName) 
+{
     if(gameAuth.gameAuthentication(gameName) === false){
         return null;
-    } else {
+    } 
+    else 
+    {
         return gamesLogicList[gameName].GetGameState(gameName);
     }
 }
@@ -64,5 +70,5 @@ function executeADraw(req, res, next) {
     next();
 }
 
-module.exports = {executeADraw, isLegalDraw, isLegalMove, addBrick, getGameStatus, initGame}
+module.exports = {executeADraw, isLegalDraw, isLegalMove, addBrick, getGameStatus, initGame,gamesLogicList}
 
