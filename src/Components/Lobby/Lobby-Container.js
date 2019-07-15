@@ -32,6 +32,7 @@ class LobbyContainer extends Component{
                                joinGameHandler={this.joinGameHandler.bind(this)}
                                removeGameHandler={this.removeGameHandler.bind(this)}
                                watchGameHandler={this.watchGameHandler.bind(this)}
+                               key={this.state.userName}
                     />
                 </div>
             )
@@ -44,7 +45,7 @@ class LobbyContainer extends Component{
             )
         } else if(this.state.watchGame === true) {
             return (
-                      <GameContainer username={this.state.username}
+                    <GameContainer username={this.state.username}
                                    gameName={this.state.currentGameName}
                                    playerStatus={"spectator"}
                                    leaveGameHandler={this.leaveGameHandler.bind(this)} />

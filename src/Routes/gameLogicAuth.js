@@ -11,21 +11,18 @@ function initGame(req, res, next)
     const playersArr = newGameReq.players;
     const numPlayers = playersArr.length;
 
-    if(gamesLogicList[gameName] === undefined) 
-    {
+    if(gamesLogicList[gameName] === undefined) {
         gamesLogicList[gameName] = gameLogic.create(numPlayers, playersArr, gameName);
     }
 
     next();
 }
 
-function getGameStatus(gameName) 
-{
-    if(gameAuth.gameAuthentication(gameName) === false){
+function getGameStatus(gameName) {
+    if(gameAuth.gameAuthentication(gameName) === false) {
         return null;
     } 
-    else 
-    {
+    else {
         return gamesLogicList[gameName].GetGameState(gameName);
     }
 }
@@ -56,7 +53,7 @@ function isLegalDraw(req, res, next) {
     const gameName = parsedReq.gameName;
     const userName = parsedReq.userName;
     
-    if(gamesLogicList[gameName].IsLegalDraw(userName) === true ){
+    if(gamesLogicList[gameName].IsLegalDraw(userName) === true ) {
         next();
     } else {
         res.sendStatus(403);
@@ -70,5 +67,11 @@ function executeADraw(req, res, next) {
     next();
 }
 
-module.exports = {executeADraw, isLegalDraw, isLegalMove, addBrick, getGameStatus, initGame,gamesLogicList}
+function restartGameLogic(gameName) {
+    if(gamesLogicList[gameName] !== undefined){
+        gamesLogicList[gameName] = undefined;
+    }
+}
+
+module.exports = {restartGameLogic, executeADraw, isLegalDraw, isLegalMove, addBrick, getGameStatus, initGame,gamesLogicList}
 

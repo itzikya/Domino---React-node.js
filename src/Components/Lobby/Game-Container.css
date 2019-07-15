@@ -1,7 +1,13 @@
 .gameBoard-container { 
     display: flex;
     justify-content: space-between;
+}
 
+.game-container {/*
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: -webkit-fill-available;*/
 }
 
 .right-panel {
@@ -38,10 +44,6 @@
 
 .my-hand-container {
     flex-direction: column;
-}
-
-#leaveBtn { 
-    background-image: url("../../leave.jpeg");
 }
 
 .my-hand {
@@ -83,16 +85,6 @@
     flex-direction: row;
 }
 
-body {
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*font-family: 'Atma';
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    /*background-image: url("./67037.jpg");*/
-}
-
 .deck2 {
     display: flex;
     flex-direction: row;
@@ -120,8 +112,6 @@ td {
 .chat-container {
     font-weight: bold;
     box-shadow: rgb(255, 255, 255) 0px 1px 0px 0px inset;
-    /*background: linear-gradient(rgb(237, 237, 237) 5%, rgb(223, 223, 223) 100%) rgb(237, 237, 237);*/
-    /*background-image: url("./StyleImgs/statistics.jpeg");*/
     background-size: 60px 65px;
     background-repeat: no-repeat;
     background-position: top right;
@@ -136,38 +126,39 @@ td {
     font-weight: bold;
     padding: 6px 24px;
     text-decoration: none;
-    /*width: auto;*/
     text-shadow: rgb(255, 255, 255) 0px 1px 0px;
-    /*width: 180px;*/
     margin: 5px;
     position: sticky;
 
 }
 
+.summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stats-summary {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
 .animate {
+    /*
     -webkit-animation: fadein 0.5s;
     animation: fadein 0.5s;
     animation-duration: 2s;
+    */
 }
 
 .popup-container {
-    position: relative;
-    left: 450px;
-    width: 400px;
-    height: 400px;
     text-align: center;
-    background: #cccc;
     padding: 15px 30px;
     border-radius: 10px 5px;
     border: 2px solid black;
-}
-
-.popup-container.endGame {
-    height: auto;
-    position: absolute;
-    bottom: 150px;
-    left: 550px;
-    background-color: #f8f8f8;
+    background-color: rgba(255, 255, 255);
+    width: fit-content;
 }
 
 .chat-base-container {

@@ -3,7 +3,7 @@ const userList = {};
 //MIDDLEWARE FUNCS
 function userAuthentication(req, res, next) {
 	if (userList[req.session.id] === undefined) {
-		res.sendStatus(401);		
+		res.sendStatus(401);	
 	} else {
 		next();
 	}

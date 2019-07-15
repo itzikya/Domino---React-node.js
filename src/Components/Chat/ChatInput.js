@@ -23,20 +23,25 @@ class ChatInput extends Component {
 
     sendText(e) {
         e.preventDefault();
-        this.setState(()=>({sendInProgress: true}));
+        this.setState(() => ({sendInProgress: true}));
         const text = this.inputElement.value;
-        fetch('/chat', {
-            method: 'POST',
-            body: text,
+        if(this.props.playerStatus !== "spectator") {
+            fetch('/chat/postChat', {
+                method: 'POST',
+                body: JSON.stringify({
+                gameName: this.props.gameName,
+                text: text
+            }),
             credentials: 'include'
-        })
-        .then(response => {            
-            if (!response.ok) {                
-                throw response;
-            }
-            this.setState(()=>({sendInProgress: false}));
-            this.inputElement.value = '';                
-        });
+            })
+            .then(response => {            
+                if (!response.ok) {                
+                    throw response;
+                }
+                this.setState(() => ({sendInProgress: false}));
+                this.inputElement.value = '';                
+            });
+        }
         return false;
     }
 }

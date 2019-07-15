@@ -47,6 +47,14 @@ gameManagement.post("/gameStatus", (req,res) => {
     res.json(gameStatus);
 });
 
+gameManagement.post("/restartGame", (req,res) =>{
+    const gameName = JSON.parse(req.body).gameName;
+    setTimeout(gamesAuth.restartGameEntry, 10000, gameName);
+    setTimeout(gamesLogicAuth.restartGameLogic, 10000, gameName);
+
+    res.sendStatus(200);
+});
+
 gameManagement.post("/isLegalMove", gamesLogicAuth.isLegalMove, (req,res) => {
     res.sendStatus(200);
 });
@@ -68,19 +76,7 @@ gameManagement.get("/allGames", (req, res) => {
     let theGames = gamesAuth.getGamesList();
     for(gameName in theGames) {
         let game = theGames[gameName];
-        if(game !== undefined && game.isActive)
-        {
-            if(gamesLogicAuth.getGameStatus(gameName).gameEnded === true)
-            {
-                gamesLogicAuth.gamesLogicList[gameName] = undefined;
-                game.players = [];
-                game.isActive = false;
-                game.spectators = [];
-            }
-        }
-
-        if(game) 
-        {
+        if(game) {
             if(userAuth.isUserExist(game.creator) === false && game.players.length === 0 && game.spectators.length === 0) {
                 gamesAuth.removeGameByName(gameName);
                 theGames = gamesAuth.getGamesList();

@@ -15,7 +15,6 @@ class Stats extends Component {
     }
 
     render() {
-        //console.log(this.props.stats);
         return (
             <div className="stats">
                 <p>Score: {this.props.stats.sumOfHandWeight}</p>

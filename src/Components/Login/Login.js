@@ -18,7 +18,8 @@ class Login extends Component {
         this.handleLoginError = this.handleLoginError.bind(this);
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.logoutHandler = this.logoutHandler.bind(this);
-        this.getUserName();
+        this.getUserName = this.getUserName.bind(this);
+        //this.getUserName();
     }
 
     render() {        
@@ -63,7 +64,7 @@ class Login extends Component {
     }
 
     fetchUserInfo() {        
-        return fetch('/users',{method: 'GET', credentials: 'include'})
+        return fetch('/users', {method: 'GET', credentials: 'include'})
         .then(res => {            
             if (!res.ok) {
                 throw res;

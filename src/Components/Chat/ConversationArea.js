@@ -29,17 +29,25 @@ class ConversationArea extends Component {
         )
     }
 
+
     getChatContent() {
-        return fetch('/chat', {method: 'GET', credentials: 'include'})
+        return fetch('/chat/getChat', {
+            method: 'POST', 
+            body: JSON.stringify({
+                gameName: this.props.gameName,
+                //userName: this.props.userName
+            }),
+            credentials: 'include'
+        })
         .then((response) => {
-            if (!response.ok){
+            if (!response.ok) {
                 throw response;
             }
             this.timeoutId = setTimeout(this.getChatContent, 200);
             return response.json();            
         })
         .then(content => {
-            this.setState(()=>({content}));
+            this.setState(() => ({content}));
         })
         .catch(err => {throw err});
     }

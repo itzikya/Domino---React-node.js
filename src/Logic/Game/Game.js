@@ -255,8 +255,8 @@ class Game {
 
         this._shuffle();
 
-        for(let i = 0; i< this.numOfPlayers; i++) {
-            for(let j = 0; j<6; j++) {
+        for(let i = 0; i < this.numOfPlayers; i++) {
+            for(let j = 0 ; j < 6 ; j++) {
                 this.Players[i].Hand.push(this.Deck.pop());
             }
         }
@@ -309,8 +309,8 @@ class Game {
 
     _rmvBrickFromHand(brick) {
         let playersHand = this.Players[this.playerTurn].Hand;
-        for(let i = 0 ; i <playersHand.length; i++) {
-            if(playersHand[i][0]==brick[0]&& playersHand[i][1] == brick[1]) {
+        for(let i = 0 ; i < playersHand.length; i++) {
+            if(playersHand[i][0]==brick[0] && playersHand[i][1] == brick[1]) {
                 playersHand.splice(i, 1);
                 break;
             }

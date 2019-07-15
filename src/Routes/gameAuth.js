@@ -23,6 +23,16 @@ function addUserToGame(req, res, next) {
     }
 }
 
+function restartGameEntry(gameName) {
+    if(gamesList[gameName]) {
+        if(gamesList[gameName].isActive === true) {
+            gamesList[gameName].isActive = false;
+            gamesList[gameName].players = [];
+            gamesList[gameName].spectators = [];
+        }
+    }
+}
+
 function addSpectatorToGame(req, res, next) {
     const gameFromReq = JSON.parse(req.body);
     const userName = usersAuth.getUserNameBySessionId(req.session.id);
@@ -32,7 +42,6 @@ function addSpectatorToGame(req, res, next) {
         //error 409 = CONFLICT
         res.status(409).send("Game name does not exist!");
     } else {
-        console.log("in add spectator:", userName);
         gamesList[gameName].spectators.push(userName);
         next();
     }
@@ -42,16 +51,16 @@ function leaveGame(req, res, next) {
     const gameFromReq = JSON.parse(req.body);
     const userName = usersAuth.getUserNameBySessionId(req.session.id);
     const gameName = gameFromReq.gameName;
-    if(gamesList[gameName]){
+    if(gamesList[gameName]) {
         if(gamesList[gameName].players.includes(userName)) {
-            if(gamesList[gameName].isActive === false){
+            //if(gamesList[gameName].isActive === false){
                 const userIndex = gamesList[gameName].players.findIndex((user) => {return user === userName});
-                gamesList[gameName].players.splice(userIndex,1);
-            }
+                gamesList[gameName].players.splice(userIndex, 1);
+            //}
         }
         if(gamesList[gameName].spectators.includes(userName)) {
             const userIndex = gamesList[gameName].spectators.findIndex((user) => {return user === userName});
-            gamesList[gameName].spectators.splice(userIndex,1);
+            gamesList[gameName].spectators.splice(userIndex, 1);
         }
     }
     next();
@@ -65,7 +74,7 @@ function addGameToAuthList(req, res, next) {
         //error 409 = CONFLICT
         res.status(409).send("Game name already exist");
     }
-    else if(gameFromReq.gameName ==="")
+    else if(gameFromReq.gameName === "")
     {
         res.status(409).send("Error: Room Name is Empty");
     }
@@ -126,4 +135,4 @@ function updateIfGameReady(gameEntry) {
         }
 }
 
-module.exports = {removeGameByName, addSpectatorToGame, getSpectators, gameAuthentication, getGameInfo, leaveGame, getGamesList, addGameToAuthList, removeGameFromAuthList, addUserToGame}
+module.exports = {restartGameEntry, removeGameByName, addSpectatorToGame, getSpectators, gameAuthentication, getGameInfo, leaveGame, getGamesList, addGameToAuthList, removeGameFromAuthList, addUserToGame}
