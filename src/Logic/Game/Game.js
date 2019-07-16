@@ -267,6 +267,7 @@ class Game {
     }
 
     _nextTurn(moveWasDraw) {
+
         this._checkEndGame();
         this.Players[this.playerTurn].UpdateStats(moveWasDraw);
         this.Players[this.playerTurn].Stats.TurnEnd();
@@ -840,23 +841,18 @@ class Game {
         return false;
     }
 
-    GetGameState(i_ID) {
+    GetGameState() {
         let listOfPlayers = [];
         let playersToSend = [];
         for(let i = 0; i < this.numOfPlayers; i++) 
         {
             let id = this.Players[i].id;
-            if(i_ID === id) 
-            {
-                playerStats = this.Players[i].Stats;
-            }
-
             let handSize = this.Players[i].Hand.length;
             listOfPlayers.push({id: id, handSize: handSize});
             playersToSend.push(this.Players[i].GetClientStats());
         }
 
-        return {
+        let gameState ={
             gameID: this.GameID,
             numOfPlayers: this.numOfPlayers,
             gameEnded: this.isGameEnded,
@@ -870,6 +866,8 @@ class Game {
             isActive: true,
             timeInSeconds: this.gameTimer.totalSeconds,
         }
+
+        return gameState
     }
 }
 

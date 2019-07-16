@@ -18,12 +18,12 @@ function initGame(req, res, next)
     next();
 }
 
-function getGameStatus(gameName) {
+function getGameStatus(gameName, userName) {
     if(gameAuth.gameAuthentication(gameName) === false) {
         return null;
     } 
     else {
-        return gamesLogicList[gameName].GetGameState(gameName);
+        return gamesLogicList[gameName].GetGameState();
     }
 }
 

@@ -137,7 +137,7 @@ class GameContainer extends Component{
                         />
         return (
             <div className="my-hand-container">
-                <div className="userName">{playerName}</div>
+                    <div className="userName"><mark><font color="green">{playerName}</font></mark></div>
                 {myHand}
             </div>
         )
@@ -156,7 +156,7 @@ class GameContainer extends Component{
                     <div className="opponent-panel1">
                         {opponentDisplay}
                     </div>
-                    <div className="userName">{playerName}</div>
+                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
                 </div>
             )
         }
@@ -178,7 +178,7 @@ class GameContainer extends Component{
                     <div className="deck opponent-panel1">
                         {pickedUpBricks}
                     </div>
-                    <div className="userName">{playerName}</div>
+                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
                 </div>
             )
         }  
@@ -202,7 +202,7 @@ class GameContainer extends Component{
             return (
                 <div className="opponent-2">
                     {opponentDisplay}
-                    <div className="userName">{playerName}</div>
+                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
                 </div>
             )
         }
@@ -222,7 +222,7 @@ class GameContainer extends Component{
             return (
                 <div className="deck2 opponent-2">
                     {pickedUpBricks}
-                    <div className="userName">{playerName}</div>
+                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
                 </div>
             )
         } 
@@ -254,8 +254,8 @@ class GameContainer extends Component{
     renderChat() {
         return (
             <div className="chat-base-container">
-                <div className="user-info-area">
-                    Hello {this.props.userName}
+                <div className="user-info-area" >
+                    <font color ="white" >Hello {this.props.userName}</font>
                 </div>
                 <div className="chat-container">
                     <ConversationArea gameName={this.props.gameName}/>
@@ -272,12 +272,15 @@ class GameContainer extends Component{
         return (
             <div className="statistics">
                 <div id="statistics-container">
-                    <p>Game length: {this.state.gameStatus.timeInSeconds}</p>
-                    <p>Current Player: <b>{this.state.gameStatus.playerTurn}</b></p>
-                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Average turn time: {this.state.gameStatus.players[playerIndex].avgTimeOfTurnSeconds}</p> : null}
-                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of draws: {this.state.gameStatus.players[playerIndex].numOfTileDraws}</p> : null}
-                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Hand Weight: {this.state.gameStatus.players[playerIndex].HandWeight}</p> : null}
-                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p>Number of turns: {this.state.gameStatus.players[playerIndex].numOfTurns}</p> : null}
+                    <p><b>Game length:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>{this.state.gameStatus.timeInSeconds}</p>
+                    {this.state.gameStatus.playerTurn !== this.props.userName ? <p>Opponent's Turn:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "red"><b>{this.state.gameStatus.playerTurn}</b></font></p>
+                    : <p>Your Turn:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color = "green"><b>{this.state.gameStatus.playerTurn}</b></font></p>}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p><b>Average turn time:&nbsp;</b> {this.state.gameStatus.players[playerIndex].avgTimeOfTurnSeconds}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p><b>Number of draws:&nbsp;&nbsp;</b> {this.state.gameStatus.players[playerIndex].numOfTileDraws}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p><b>Hand Weight:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> {this.state.gameStatus.players[playerIndex].HandWeight}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p><b>Number of turns:&nbsp;&nbsp; </b>{this.state.gameStatus.players[playerIndex].numOfTurns}</p> : null}
+                    {this.state.playerStatus !== playerStatusConst.SPECTATOR ? <p><b>Deck Size:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>{this.state.gameStatus.deckSize}</p>: null}
+
                 </div>
             </div> )
     }
@@ -315,11 +318,12 @@ class GameContainer extends Component{
                         <div className="stats-summary">
                             {this.state.gameStatus.players.map((player, index) => 
                             <div key={player.id} className="pop-container">
-                                <p>Player: {player.id}</p>
-                                <p>Length: {player.timeFromStartSeconds}</p>
-                                <p>Turns: {player.numOfTurns}</p>
-                                <p>Average: {player.avgTimeOfTurnSeconds}</p>
-                                <p>Draws: {player.numOfTileDraws}</p>
+                                <p>Player Name: {player.id}</p>
+                                <p>Time From Start: {player.timeFromStartSeconds}</p>
+                                <p>Number Of Turns: {player.numOfTurns}</p>
+                                <p>Average Turn Time: {player.avgTimeOfTurnSeconds}</p>
+                                <p>Deck Size: {this.state.gameStatus.deckSize}</p>
+                                <p>Number Draws: {player.numOfTileDraws}</p>
                             </div>
                             )}
                         </div>
