@@ -137,7 +137,7 @@ class GameContainer extends Component{
                         />
         return (
             <div className="my-hand-container">
-                    <div className="userName"><mark><font color="green">{playerName}</font></mark></div>
+                    <div><p color="green" className="my-userName">{playerName}</p></div>
                 {myHand}
             </div>
         )
@@ -156,7 +156,7 @@ class GameContainer extends Component{
                     <div className="opponent-panel1">
                         {opponentDisplay}
                     </div>
-                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
+                    <div><p color="black" className="userName">{playerName}</p></div>
                 </div>
             )
         }
@@ -178,7 +178,7 @@ class GameContainer extends Component{
                     <div className="deck opponent-panel1">
                         {pickedUpBricks}
                     </div>
-                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
+                    <div className="userName"><p color="black" className="userName">{playerName}</p></div>
                 </div>
             )
         }  
@@ -202,7 +202,7 @@ class GameContainer extends Component{
             return (
                 <div className="opponent-2">
                     {opponentDisplay}
-                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
+                    <div className="userName"><p color="black" className="userName">{playerName}</p></div>
                 </div>
             )
         }
@@ -222,7 +222,7 @@ class GameContainer extends Component{
             return (
                 <div className="deck2 opponent-2">
                     {pickedUpBricks}
-                    <div className="userName"><mark><font color="red">{playerName}</font></mark></div>
+                    <div className="userName"><p color="black" className="userName">{playerName}</p></div>
                 </div>
             )
         } 
@@ -352,15 +352,15 @@ class GameContainer extends Component{
                         this.notificationManager("Invalid Move!", notificationConst.INVALID_MOVE);
                         //throw response;
                     }
-                    fetch("/games/addBrick", {
-                        method: "POST",
-                        body: JSON.stringify({gameName: this.props.gameName,
-                                              userName: this.props.userName,
-                                              brick: brick}),
-                        credentials: "include"
-                    })
-                    .then(response => {
-                    })
+                    else {
+                        fetch("/games/addBrick", {
+                            method: "POST",
+                            body: JSON.stringify({gameName: this.props.gameName,
+                                                  userName: this.props.userName,
+                                                  brick: brick}),
+                            credentials: "include"
+                        })
+                    }
                 })
             }
             else {
@@ -534,43 +534,44 @@ class GameContainer extends Component{
             }),
             credentials: "include"
         })
-            .then((response) => {
-                if (!response.ok) {
-                    throw response;
-                }
-                return response.json();
-            })
-            .then(updatedGameStatus => {
-                let updatedPlayerStatus = this.state.playerStatus;
-                let playerName, playerIndex, playerHand;
+        .then((response) => {
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        })
+        .then(updatedGameStatus => {
+            let updatedPlayerStatus = this.state.playerStatus;
+            let playerName, playerIndex, playerHand;
 
-                if (updatedGameStatus.isActive === true) {
-                    this.timeoutId = setTimeout(this.getGameStatus, 1000);
-                }
-                if(this.state.playerStatus !== playerStatusConst.SPECTATOR) {
+            if (updatedGameStatus.isActive === true) {
+                this.timeoutId = setTimeout(this.getGameStatus, 1000);
+            }
+            if(this.state.playerStatus !== playerStatusConst.SPECTATOR) {
 
-                    playerName = this.props.userName;
-                    playerIndex = this.state.players.indexOf(playerName);
-                    playerHand = updatedGameStatus.players[playerIndex].Hand;
-                    
-                    if(playerHand.length === 0) {
-                        updatedPlayerStatus = playerStatusConst.FINISHED_CARDS;
-                    }
-                    if(updatedGameStatus.gameEnded) {
-                        updatedPlayerStatus = playerStatusConst.FINISHED_CARDS;
-                    }
+                playerName = this.props.userName;
+                playerIndex = this.state.players.indexOf(playerName);
+                playerHand = updatedGameStatus.players[playerIndex].Hand;
+                
+                if(playerHand.length === 0) {
+                    updatedPlayerStatus = playerStatusConst.FINISHED_CARDS;
                 }
-                    
-                this.setState(() => ({
-                    isActive: !updatedGameStatus.gameEnded,
-                    gameStatus: updatedGameStatus,
-                    playerStatus: updatedPlayerStatus
-                }));
-            })
-            .catch(err => {
-                throw err
-            });
+                if(updatedGameStatus.gameEnded) {
+                    updatedPlayerStatus = playerStatusConst.FINISHED_CARDS;
+                }
+            }
+                
+            this.setState(() => ({
+                isActive: !updatedGameStatus.gameEnded,
+                gameStatus: updatedGameStatus,
+                playerStatus: updatedPlayerStatus
+            }));
+        })
+        .catch(err => {
+            throw err
+        });
     }
+
 
     restartGame() {
         fetch("/games/restartGame", {
@@ -578,16 +579,28 @@ class GameContainer extends Component{
             body: JSON.stringify({gameName: this.props.gameName}),
             credentials: "include"
         })
-            .then((response) => {
-                if (!response.ok) {
-                    throw response;
-                }
-            })
-            .catch(err => {
-                throw err
-            });
+        .then((response) => {
+            if (!response.ok) {
+                throw response;
+            }
+            else {
+                fetch("/chat/restartChat", {
+                method: "POST",
+                body: JSON.stringify({gameName: this.props.gameName}),
+                credentials: "include"
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            throw err
+        });
     }
-    
+  
 //----------------------------------------------------UTILITIES---------------------------------------------------------
 
     createStatusMessage(gameInfo) {

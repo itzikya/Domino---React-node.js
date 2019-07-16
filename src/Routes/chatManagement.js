@@ -11,17 +11,17 @@ const chatManagement = express.Router();
 chatManagement.use(bodyParser.text());
 
 chatManagement.post("/getChat", userAuth.userAuthentication, (req, res) => {	
-        const gameName = JSON.parse(req.body).gameName;
-        if(chatContent.hasOwnProperty(gameName) ) {
-            res.json(chatContent[gameName]);
-        }
-        else {
-            res.json(emptyChat);
-        }
-	})
+    const gameName = JSON.parse(req.body).gameName;
+    if(chatContent.hasOwnProperty(gameName) ) {
+        res.json(chatContent[gameName]);
+    }
+    else {
+        res.json(emptyChat);
+    }
+})
 	
-    chatManagement.route('/postChat')
-	.post(userAuth.userAuthentication, (req, res) => {		
+chatManagement.route('/postChat')
+    .post(userAuth.userAuthentication, (req, res) => {		
         let arrToAdd = [];
         const gameName = JSON.parse(req.body).gameName;	
         const text = JSON.parse(req.body).text;
@@ -32,6 +32,16 @@ chatManagement.post("/getChat", userAuth.userAuthentication, (req, res) => {
         arrToAdd.push({user: userInfo, text: text}); 
         chatContent[gameName] = arrToAdd;        
         res.sendStatus(200);
-    });
-    
+    }
+)
+
+chatManagement.route('/restartChat')
+    .post((req, res) => {
+        const gameName = JSON.parse(req.body).gameName;
+            if(chatContent.hasOwnProperty(gameName) ) {
+                chatContent[gameName] = [];
+            }
+            res.sendStatus(200);
+    })
+
 module.exports = chatManagement;
