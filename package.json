@@ -7,7 +7,7 @@
     "build": "webpack --mode development",
     "build-watch": "webpack --watch --mode development"
   },
-  "engine": {
+  "engines": {
     "node": "10.13.0"
   },
   "author": "Spivak Ofer",
